@@ -1,5 +1,3 @@
-"use strict";
-
 const player1 = {
     name: 'kitana',
     hp: 100,
@@ -18,6 +16,8 @@ const player2 = {
         console.log(`${player2.name} Fight`)
     }
 }
+
+const arenas = document.querySelector('.arenas');
 
 const createPlayer = (player, data) => {
     const $player = document.createElement('div');
@@ -39,8 +39,6 @@ const createPlayer = (player, data) => {
     
     const $img = document.createElement('img');
     $img.src = data.img;
-
-    const arenas = document.querySelector('.arenas');
 
     arenas.appendChild($player);
     $player.appendChild($progressbar);
