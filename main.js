@@ -1,4 +1,25 @@
 const arenas = document.querySelector('.arenas');
+const btn = document.querySelector('.button');
+
+const getRandom = (min, max) => {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+const reduceHP = (player, amount) => {
+    const $hpBar = document.querySelector(`.player${player.player} .life`);
+
+    player.hp -= amount;
+
+    if (player.hp <= 0) {
+        $hpBar.style.width = 0;
+        player.hp = 0;
+    }
+    $hpBar.style.width = `${player.hp}%`;
+    console.log($hpBar)
+    console.log(player.hp)
+    console.log(amount)
+
+} 
 
 const createEl = (tagName, className) => {
     const el = document.createElement(tagName);
@@ -53,3 +74,7 @@ const createPlayer = (data) => {
 
 arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
+
+btn.addEventListener('click', () => {
+    reduceHP(player1, getRandom(1, 20));
+});
