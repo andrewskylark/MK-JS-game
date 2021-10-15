@@ -1,8 +1,18 @@
 const arenas = document.querySelector('.arenas');
 const btn = document.querySelector('.button');
 
+let gameOver = false;
+let looser = null;
+let winner = null;
+
 const getRandom = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
+}
+const createLoseTitle = (name) => {
+    const $loseTitle = createEl('div', 'loseTitle');
+    $loseTitle.innerText = `${name} wins!`
+
+    return $loseTitle;
 }
 
 const reduceHP = (player, amount) => {
@@ -13,13 +23,13 @@ const reduceHP = (player, amount) => {
     if (player.hp <= 0) {
         $hpBar.style.width = 0;
         player.hp = 0;
+        btn.disabled = true;
+        looser = player.name
+        gameOver = true;
     }
-    $hpBar.style.width = `${player.hp}%`;
-    console.log($hpBar)
-    console.log(player.hp)
-    console.log(amount)
 
-} 
+    $hpBar.style.width = `${player.hp}%`;
+}
 
 const createEl = (tagName, className) => {
     const el = document.createElement(tagName);
@@ -77,4 +87,10 @@ arenas.appendChild(createPlayer(player2));
 
 btn.addEventListener('click', () => {
     reduceHP(player1, getRandom(1, 20));
+    reduceHP(player2, getRandom(1, 20));
+
+    if (gameOver) {
+        player1.name === looser ? winner = player2.name : winner = player1.name;
+        arenas.appendChild(createLoseTitle(winner))
+    }
 });
