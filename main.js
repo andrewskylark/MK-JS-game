@@ -21,7 +21,6 @@ const reduceHP = (player, amount) => {
     player.hp -= amount;
 
     if (player.hp <= 0) {
-        $hpBar.style.width = 0;
         player.hp = 0;
         btn.disabled = true;
         looser = player.name
@@ -90,7 +89,7 @@ btn.addEventListener('click', () => {
     reduceHP(player2, getRandom(1, 20));
 
     if (gameOver) {
-        player1.name === looser ? winner = player2.name : winner = player1.name;
+        winner = player1.name === looser ? player2.name : player1.name;
         arenas.appendChild(createLoseTitle(winner))
     }
 });
