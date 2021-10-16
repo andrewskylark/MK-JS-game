@@ -1,4 +1,46 @@
+const arenas = document.querySelector('.arenas');
+const btn = document.querySelector('.button');
+
+let gameOver = false;
+let looser = null;
+let winner = null;
+
+const getRandom = (min, max) => {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+const createLoseTitle = (name) => {
+    const $loseTitle = createEl('div', 'loseTitle');
+    $loseTitle.innerText = `${name} wins!`
+
+    return $loseTitle;
+}
+
+const reduceHP = (player, amount) => {
+    const $hpBar = document.querySelector(`.player${player.player} .life`);
+
+    player.hp -= amount;
+
+    if (player.hp <= 0) {
+        player.hp = 0;
+        btn.disabled = true;
+        looser = player.name
+        gameOver = true;
+    }
+
+    $hpBar.style.width = `${player.hp}%`;
+}
+
+const createEl = (tagName, className) => {
+    const el = document.createElement(tagName);
+    if (className) {
+        el.classList.add(className);
+    }
+
+    return el
+}
+
 const player1 = {
+    player: 1,
     name: 'kitana',
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
@@ -8,8 +50,9 @@ const player1 = {
     }
 }
 const player2 = {
+    player: 2,
     name: 'liukang',
-    hp: 99,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
     weapon: ['1', '2', '3'],
     attack: () => {
@@ -17,36 +60,36 @@ const player2 = {
     }
 }
 
-const arenas = document.querySelector('.arenas');
+const createPlayer = (data) => {
+    const $player = createEl('div', `player${data.player}`);
+    const $progressbar = createEl('div', 'progressbar');
+    const $life = createEl('div', 'life');
+    const $name = createEl('div', 'name');
+    const $character = createEl('div', 'character');
+    const $img = createEl('img');
 
-const createPlayer = (player, data) => {
-    const $player = document.createElement('div');
-    $player.classList.add(player);
-    
-    const $progressbar = document.createElement('div');
-    $progressbar.classList.add('progressbar');
-    
-    const $life = document.createElement('div');
-    $life.classList.add('life');
-    $life.innerText= data.hp
-    
-    const $name = document.createElement('div');
-    $name.classList.add('name');
-    
-    const $character = document.createElement('div');
-    $character.classList.add('character');
+    $life.style.width = `${data.hp}%`
     $name.innerText = data.name
-    
-    const $img = document.createElement('img');
     $img.src = data.img;
 
-    arenas.appendChild($player);
-    $player.appendChild($progressbar);
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);
-    $player.appendChild($character);
     $character.appendChild($img);
+    $player.appendChild($progressbar);
+    $player.appendChild($character);
+
+    return $player;
 }
 
-createPlayer('player1', player1);
-createPlayer('player2', player2);
+arenas.appendChild(createPlayer(player1));
+arenas.appendChild(createPlayer(player2));
+
+btn.addEventListener('click', () => {
+    reduceHP(player1, getRandom(1, 20));
+    reduceHP(player2, getRandom(1, 20));
+
+    if (gameOver) {
+        winner = player1.name === looser ? player2.name : player1.name;
+        arenas.appendChild(createLoseTitle(winner))
+    }
+});
