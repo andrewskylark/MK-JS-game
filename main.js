@@ -8,28 +8,17 @@ let winner = null;
 const getRandom = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 }
-const createLoseTitle = (name) => {
-    const $loseTitle = createEl('div', 'loseTitle');
-    $loseTitle.innerText = `${name} wins!`
+const createResultsTitle = (name) => {
+    const $resultTitle = createEl('div', 'loseTitle');
 
-    return $loseTitle;
-}
-
-const reduceHP = (player, amount) => {
-    const $hpBar = document.querySelector(`.player${player.player} .life`);
-
-    player.hp -= amount;
-
-    if (player.hp <= 0) {
-        player.hp = 0;
-        btn.disabled = true;
-        looser = player.name
-        gameOver = true;
+    if (name) {
+        $resultTitle.innerText = `${name} wins!`;
+    } else {
+        $resultTitle.innerText = `DRAW!`;
     }
 
-    $hpBar.style.width = `${player.hp}%`;
+    return $resultTitle;
 }
-
 const createEl = (tagName, className) => {
     const el = document.createElement(tagName);
     if (className) {
@@ -38,6 +27,23 @@ const createEl = (tagName, className) => {
 
     return el
 }
+function reduceHP(amount) {
+    this.hp -= amount;
+
+    if (this.hp <= 0) {
+        this.hp = 0;
+        looser = this.name
+        gameOver = true;
+    }
+}
+function elHP() {
+    return document.querySelector(`.player${this.player} .life`)
+}
+function renderHP() {
+    let $hpBar = this.elHP();
+
+    $hpBar.style.width = `${this.hp}%`;
+}
 
 const player1 = {
     player: 1,
@@ -45,9 +51,12 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
     weapon: ['1', '2', '3'],
-    attack: () => {
-        console.log(`${player1.name} Fight`)
-    }
+    attack: function() {
+        console.log(`${this.name} Fight`)
+    },
+    reduceHP: reduceHP,
+    elHP: elHP,
+    renderHP: renderHP
 }
 const player2 = {
     player: 2,
@@ -55,9 +64,12 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
     weapon: ['1', '2', '3'],
-    attack: () => {
-        console.log(`${player2.name} Fight`)
-    }
+    attack: function() {
+        console.log(`${this.name} Fight`)
+    },
+    reduceHP: reduceHP,
+    elHP: elHP,
+    renderHP: renderHP,
 }
 
 const createPlayer = (data) => {
@@ -85,11 +97,21 @@ arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
 
 btn.addEventListener('click', () => {
-    reduceHP(player1, getRandom(1, 20));
-    reduceHP(player2, getRandom(1, 20));
+    player1.reduceHP(getRandom(1, 20));
+    player1.renderHP();
+    player2.reduceHP(getRandom(1, 20));
+    player2.renderHP();
 
     if (gameOver) {
-        winner = player1.name === looser ? player2.name : player1.name;
-        arenas.appendChild(createLoseTitle(winner))
+        btn.disabled = true;
+        
+        if (player1.hp === 0 && player2.hp === 0) {
+            arenas.appendChild(createResultsTitle());
+        } else {
+            winner = (player1.name === looser ? player2.name : player1.name);
+        
+            arenas.appendChild(createResultsTitle(winner));
+        }
+        
     }
 });
