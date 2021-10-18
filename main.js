@@ -27,6 +27,7 @@ const createEl = (tagName, className) => {
 
     return el
 }
+
 function reduceHP(amount) {
     this.hp -= amount;
 
@@ -92,6 +93,19 @@ const createPlayer = (data) => {
 
     return $player;
 }
+const createReloadBtn = () => {
+    const $div = createEl('div', 'reloadWrap');
+    const $btn = createEl('button', 'button');
+
+    $btn.innerText = 'RESTART';
+    $btn.addEventListener('click', () => {
+        window.location.reload();
+    })
+
+    $div.appendChild($btn);
+
+    return $div;
+}
 
 arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
@@ -104,6 +118,7 @@ btn.addEventListener('click', () => {
 
     if (gameOver) {
         btn.disabled = true;
+        arenas.appendChild(createReloadBtn());
         
         if (player1.hp === 0 && player2.hp === 0) {
             arenas.appendChild(createResultsTitle());
