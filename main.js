@@ -1,9 +1,51 @@
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
+}
+const ATTACK = ['head', 'body', 'foot'];
 const arenas = document.querySelector('.arenas');
-const btn = document.querySelector('.button');
+// const btn = document.querySelector('.button');
+const $form = document.querySelector('.control');
 
 const getRandom = (min, max) => {
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max + 1 - min) + min);
 }
+function enemyAttack() {
+    const hit = ATTACK[getRandom(0, 2)];
+    const defence = ATTACK[getRandom(0, 2)];
+
+    return {
+        value: getRandom(1, HIT[hit]),
+        hit,
+        defence,
+    }
+}
+
+$form.addEventListener('submit', function(evt) {
+    evt.preventDefault();
+    console.dir($form);
+    const enemy = enemyAttack();
+    const attack = {};
+    
+    for (let item of $form) {
+        if (item.checked && item.name === 'hit') {
+            attack.value = getRandom(1, HIT[item.value]);
+            attack.hit = item.value;
+        }
+        if (item.checked && item.name === 'defence') {
+            attack.defence = item.value;
+        }
+
+        item.checked = false;//reset form on click
+    }
+
+
+    console.log(attack)
+    console.log(enemy)
+})
+
+
 const createResultsTitle = (name) => {
     const $resultTitle = createEl('div', 'loseTitle');
 
@@ -101,22 +143,22 @@ const createReloadBtn = () => {
 arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
 
-btn.addEventListener('click', () => {
-    player1.changeHP(getRandom(1, 20));
-    player1.renderHP();
-    player2.changeHP(getRandom(1, 20));
-    player2.renderHP();
+// btn.addEventListener('click', () => {
+//     player1.changeHP(getRandom(1, 20));
+//     player1.renderHP();
+//     player2.changeHP(getRandom(1, 20));
+//     player2.renderHP();
 
-    if (player1.hp === 0 || player2.hp === 0) {
-        btn.disabled = true;
-        arenas.appendChild(createReloadBtn());
-    }
+//     if (player1.hp === 0 || player2.hp === 0) {
+//         btn.disabled = true;
+//         arenas.appendChild(createReloadBtn());
+//     }
 
-    if (player1.hp === 0 && player1.hp < player2.hp) {
-        arenas.appendChild(createResultsTitle(player2.name));
-    } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        arenas.appendChild(createResultsTitle(player1.name));
-    } else if (player1.hp === 0 && player2.hp === 0) {
-        arenas.appendChild(createResultsTitle());
-    }
-});
+//     if (player1.hp === 0 && player1.hp < player2.hp) {
+//         arenas.appendChild(createResultsTitle(player2.name));
+//     } else if (player2.hp === 0 && player2.hp < player1.hp) {
+//         arenas.appendChild(createResultsTitle(player1.name));
+//     } else if (player1.hp === 0 && player2.hp === 0) {
+//         arenas.appendChild(createResultsTitle());
+//     }
+// });
