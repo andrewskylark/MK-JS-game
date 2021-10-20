@@ -11,41 +11,9 @@ const $form = document.querySelector('.control');
 const getRandom = (min, max) => {
     return Math.floor(Math.random() * (max + 1 - min) + min);
 }
-function enemyAttack() {
-    const hit = ATTACK[getRandom(0, 2)];
-    const defence = ATTACK[getRandom(0, 2)];
-
-    return {
-        value: getRandom(1, HIT[hit]),
-        hit,
-        defence,
-    }
+function attack() {
+    console.log(`${this.name} Fight`)
 }
-
-$form.addEventListener('submit', function(evt) {
-    evt.preventDefault();
-    console.dir($form);
-    const enemy = enemyAttack();
-    const attack = {};
-    
-    for (let item of $form) {
-        if (item.checked && item.name === 'hit') {
-            attack.value = getRandom(1, HIT[item.value]);
-            attack.hit = item.value;
-        }
-        if (item.checked && item.name === 'defence') {
-            attack.defence = item.value;
-        }
-
-        item.checked = false;//reset form on click
-    }
-
-
-    console.log(attack)
-    console.log(enemy)
-})
-
-
 const createResultsTitle = (name) => {
     const $resultTitle = createEl('div', 'loseTitle');
 
@@ -65,9 +33,6 @@ const createEl = (tagName, className) => {
 
     return el
 }
-function attack() {
-    console.log(`${this.name} Fight`)
-}
 function changeHP(amount) {
     this.hp -= amount;
 
@@ -82,6 +47,16 @@ function renderHP() {
     let $hpBar = this.elHP();
 
     $hpBar.style.width = `${this.hp}%`;
+}
+function enemyAttack() {
+    const hit = ATTACK[getRandom(0, 2)];
+    const defence = ATTACK[getRandom(0, 2)];
+
+    return {
+        value: getRandom(1, HIT[hit]),
+        hit,
+        defence,
+    }
 }
 
 const player1 = {
@@ -142,6 +117,46 @@ const createReloadBtn = () => {
 
 arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
+
+$form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    const enemyMove = enemyAttack();
+    const playerMove= {};
+
+    for (let item of $form) {
+        if (item.checked && item.name === 'hit') {
+            playerMove.value = getRandom(1, HIT[item.value]);
+            playerMove.hit = item.value;
+        }
+        if (item.checked && item.name === 'defence') {
+            playerMove.defence = item.value;
+        }
+
+        item.checked = false;//reset form on click
+    }
+
+    if (playerMove.hit !== enemyMove.defence) {
+        player2.changeHP(enemyMove.value);
+        player2.renderHP();
+    }
+    if (enemyMove.hit !== playerMove.defence) {
+        player1.changeHP(playerMove.value);
+        player1.renderHP();
+    }
+
+    if (player1.hp === 0 || player2.hp === 0) {
+        arenas.appendChild(createReloadBtn());
+    }
+
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        arenas.appendChild(createResultsTitle(player2.name));
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        arenas.appendChild(createResultsTitle(player1.name));
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        arenas.appendChild(createResultsTitle());
+    }
+});
 
 // btn.addEventListener('click', () => {
 //     player1.changeHP(getRandom(1, 20));
