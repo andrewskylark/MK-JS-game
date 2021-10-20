@@ -1,10 +1,6 @@
 const arenas = document.querySelector('.arenas');
 const btn = document.querySelector('.button');
 
-let gameOver = false;
-let looser = null;
-let winner = null;
-
 const getRandom = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 }
@@ -27,14 +23,14 @@ const createEl = (tagName, className) => {
 
     return el
 }
-
-function reduceHP(amount) {
+function attack() {
+    console.log(`${this.name} Fight`)
+}
+function changeHP(amount) {
     this.hp -= amount;
 
     if (this.hp <= 0) {
         this.hp = 0;
-        looser = this.name
-        gameOver = true;
     }
 }
 function elHP() {
@@ -52,12 +48,10 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
     weapon: ['1', '2', '3'],
-    attack: function() {
-        console.log(`${this.name} Fight`)
-    },
-    reduceHP: reduceHP,
-    elHP: elHP,
-    renderHP: renderHP
+    attack,
+    changeHP,
+    elHP,
+    renderHP
 }
 const player2 = {
     player: 2,
@@ -65,12 +59,10 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
     weapon: ['1', '2', '3'],
-    attack: function() {
-        console.log(`${this.name} Fight`)
-    },
-    reduceHP: reduceHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    attack,
+    changeHP,
+    elHP,
+    renderHP
 }
 
 const createPlayer = (data) => {
@@ -101,7 +93,6 @@ const createReloadBtn = () => {
     $btn.addEventListener('click', () => {
         window.location.reload();
     })
-
     $div.appendChild($btn);
 
     return $div;
@@ -111,22 +102,21 @@ arenas.appendChild(createPlayer(player1));
 arenas.appendChild(createPlayer(player2));
 
 btn.addEventListener('click', () => {
-    player1.reduceHP(getRandom(1, 20));
+    player1.changeHP(getRandom(1, 20));
     player1.renderHP();
-    player2.reduceHP(getRandom(1, 20));
+    player2.changeHP(getRandom(1, 20));
     player2.renderHP();
 
-    if (gameOver) {
+    if (player1.hp === 0 || player2.hp === 0) {
         btn.disabled = true;
         arenas.appendChild(createReloadBtn());
-        
-        if (player1.hp === 0 && player2.hp === 0) {
-            arenas.appendChild(createResultsTitle());
-        } else {
-            winner = (player1.name === looser ? player2.name : player1.name);
-        
-            arenas.appendChild(createResultsTitle(winner));
-        }
-        
+    }
+
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        arenas.appendChild(createResultsTitle(player2.name));
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        arenas.appendChild(createResultsTitle(player1.name));
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        arenas.appendChild(createResultsTitle());
     }
 });
