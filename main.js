@@ -4,6 +4,29 @@ const HIT = {
     foot: 20,
 }
 const ATTACK = ['head', 'body', 'foot'];
+const player1 = {
+    player: 1,
+    name: 'kitana',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
+    weapon: ['1', '2', '3'],
+    attack,
+    changeHP,
+    elHP,
+    renderHP
+}
+const player2 = {
+    player: 2,
+    name: 'liukang',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
+    weapon: ['1', '2', '3'],
+    attack,
+    changeHP,
+    elHP,
+    renderHP
+}
+
 const arenas = document.querySelector('.arenas');
 // const btn = document.querySelector('.button');
 const $form = document.querySelector('.control');
@@ -58,28 +81,36 @@ function enemyAttack() {
         defence,
     }
 }
+function playerAttack() {
+    const playerMove = {};
 
-const player1 = {
-    player: 1,
-    name: 'kitana',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-    weapon: ['1', '2', '3'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP
+    for (let item of $form) {
+        if (item.checked && item.name === 'hit') {
+            playerMove.value = getRandom(1, HIT[item.value]);
+            playerMove.hit = item.value;
+        }
+        if (item.checked && item.name === 'defence') {
+            playerMove.defence = item.value;
+        }
+
+        item.checked = false;//reset form on click
+    }
+
+    return playerMove;
 }
-const player2 = {
-    player: 2,
-    name: 'liukang',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
-    weapon: ['1', '2', '3'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP
+
+function showResults() {
+    if (player1.hp === 0 || player2.hp === 0) {
+        arenas.appendChild(createReloadBtn());
+    }
+
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        arenas.appendChild(createResultsTitle(player2.name));
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        arenas.appendChild(createResultsTitle(player1.name));
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        arenas.appendChild(createResultsTitle());
+    }
 }
 
 const createPlayer = (data) => {
@@ -122,19 +153,7 @@ $form.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
     const enemyMove = enemyAttack();
-    const playerMove= {};
-
-    for (let item of $form) {
-        if (item.checked && item.name === 'hit') {
-            playerMove.value = getRandom(1, HIT[item.value]);
-            playerMove.hit = item.value;
-        }
-        if (item.checked && item.name === 'defence') {
-            playerMove.defence = item.value;
-        }
-
-        item.checked = false;//reset form on click
-    }
+    const playerMove = playerAttack();
 
     if (playerMove.hit !== enemyMove.defence) {
         player2.changeHP(enemyMove.value);
@@ -145,17 +164,7 @@ $form.addEventListener('submit', function (evt) {
         player1.renderHP();
     }
 
-    if (player1.hp === 0 || player2.hp === 0) {
-        arenas.appendChild(createReloadBtn());
-    }
-
-    if (player1.hp === 0 && player1.hp < player2.hp) {
-        arenas.appendChild(createResultsTitle(player2.name));
-    } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        arenas.appendChild(createResultsTitle(player1.name));
-    } else if (player1.hp === 0 && player2.hp === 0) {
-        arenas.appendChild(createResultsTitle());
-    }
+    showResults();
 });
 
 // btn.addEventListener('click', () => {
