@@ -177,7 +177,8 @@ arenas.appendChild(createPlayer(player2));
 
 function generateLogs(type, player1, player2, kickValue) {
     const date = new Date();
-    const time = `${date.getHours()}:${date.getMinutes()}`
+    const normilizeTime = (num) => (num.toString().length > 1 ? num : `0${num}`);
+    const time = `${normilizeTime(date.getHours())}:${normilizeTime(date.getMinutes())}`;
 
     function getText() {
         switch (type) {
@@ -213,33 +214,16 @@ function showResults() {
         arenas.appendChild(createReloadBtn());
     }
 
-    switch (true) {
-        case (player1.hp === 0 && player1.hp < player2.hp):
-            arenas.appendChild(createResultsTitle(player2.name));
-            generateLogs('end', player2, player1)
-            break;
-        case (player2.hp === 0 && player2.hp < player1.hp):
-            arenas.appendChild(createResultsTitle(player2.name));
-            generateLogs('end', player1, player2)
-            break;
-        case (player1.hp === 0 && player2.hp === 0):
-            arenas.appendChild(createResultsTitle());
-            generateLogs('draw')
-            break;
-
-        default:
-            break;
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        arenas.appendChild(createResultsTitle(player2.name));
+        generateLogs('end', player2, player1)
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        arenas.appendChild(createResultsTitle(player1.name));
+        generateLogs('end', player1, player2)
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        arenas.appendChild(createResultsTitle());
+        generateLogs('draw')
     }
-    // if (player1.hp === 0 && player1.hp < player2.hp) {
-    //     arenas.appendChild(createResultsTitle(player2.name));
-    //     generateLogs('end', player2, player1)
-    // } else if (player2.hp === 0 && player2.hp < player1.hp) {
-    //     arenas.appendChild(createResultsTitle(player1.name));
-    //     generateLogs('end', player1, player2)
-    // } else if (player1.hp === 0 && player2.hp === 0) {
-    //     arenas.appendChild(createResultsTitle());
-    //     generateLogs('draw')
-    // }
 }
 
 generateLogs('start', player1, player2)
