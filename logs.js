@@ -1,3 +1,5 @@
+import { getRandom, normilizeTime } from "./utils.js";
+
 const logs = {
     start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
     end: [
@@ -37,3 +39,38 @@ const logs = {
     ],
     draw: 'Ничья - это тоже победа!'
 };
+
+const $chat = document.querySelector('.chat');
+
+export function generateLogs(type, player1, player2, kickValue) {
+    const date = new Date();
+    const time = `${normilizeTime(date.getHours())}:${normilizeTime(date.getMinutes())}`;
+
+    function getText() {
+        switch (type) {
+            case 'start':
+                return logs[type].replace('[time]', time).replace('[player1]', player1.name).replace('[player2]', player2.name);
+
+            case 'hit':
+                let log = logs[type][getRandom(0, type.length)].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
+                return `${time} - ${log} ${player2.name} - ${kickValue}hp, (${player2.hp}/100)`
+
+            case 'defence':
+                return logs[type][getRandom(0, type.length)].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
+
+            case 'end':
+                return logs[type][getRandom(0, type.length)].replace('[playerWins]', player1.name).replace('[playerLose]', player2.name);
+
+            case 'draw':
+                return logs[type];
+
+            default:
+                break;
+        }
+    }
+
+    const text = getText();
+    const el = `<p>${text}</p>`;
+
+    $chat.insertAdjacentHTML('afterbegin', el)
+}
