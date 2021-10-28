@@ -1,3 +1,7 @@
+import { getRandom } from "./utils.js";
+
+const $form = document.querySelector('.control');
+
 export const HIT = {
     head: 30,
     body: 25,
@@ -15,7 +19,7 @@ export const player1 = {
     elHP,
     renderHP
 }
-export const { player, name, hp, ...rest } = player1;
+
 export const player2 = {
     player: 2,
     name: 'Liu Kang',
@@ -27,7 +31,6 @@ export const player2 = {
     elHP,
     renderHP
 }
-export const { player: playerP2, name: nameP2, hp: hpP2, ...restP2 } = player2;
 
 export function attack() {
     console.log(`${this.name} Fight`)
