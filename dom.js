@@ -7,17 +7,17 @@ const createEl = (tagName, className) => {
     return el
 }
 
-export const createPlayer = (data) => {
-    const $player = createEl('div', `player${data.player}`);
+export const createPlayer = ({player, hp, name, img}) => {
+    const $player = createEl('div', `player${player}`);
     const $progressbar = createEl('div', 'progressbar');
     const $life = createEl('div', 'life');
     const $name = createEl('div', 'name');
     const $character = createEl('div', 'character');
     const $img = createEl('img');
 
-    $life.style.width = `${data.hp}%`
-    $name.innerText = data.name
-    $img.src = data.img;
+    $life.style.width = `${hp}%`;
+    $name.innerText = name;
+    $img.src = img;
 
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);

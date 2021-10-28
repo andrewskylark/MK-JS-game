@@ -1,52 +1,55 @@
+import { getRandom } from "./utils.js";
+
+const $form = document.querySelector('.control');
+
 export const HIT = {
     head: 30,
     body: 25,
     foot: 20,
 }
 export const ATTACK = ['head', 'body', 'foot'];
-export const player1 = {
+
+class Player {
+    constructor(props) {
+        this.player = props.player;
+        this.name = props.name;
+        this.hp = props.hp;
+        this.img = props.img;
+        // this.weapon = props.weapon;
+    }
+
+    attack = () => {
+        console.log(`${this.name} Fight`);
+    };
+    changeHP = (amount) => {
+        this.hp -= amount;
+    
+        if (this.hp <= 0) {
+            this.hp = 0;
+        }
+    }
+    elHP = () => {
+        return document.querySelector(`.player${this.player} .life`)
+    }
+    renderHP = () => {
+        let $hpBar = this.elHP();
+    
+        $hpBar.style.width = `${this.hp}%`;
+    }
+}
+export const player1 = new Player({
     player: 1,
     name: 'Kitana',
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-    weapon: ['1', '2', '3'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP
-}
-export const { player, name, hp, ...rest } = player1;
-export const player2 = {
+});
+export const player2 = new Player({
     player: 2,
     name: 'Liu Kang',
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
-    weapon: ['1', '2', '3'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP
-}
-export const { player: playerP2, name: nameP2, hp: hpP2, ...restP2 } = player2;
+});
 
-export function attack() {
-    console.log(`${this.name} Fight`)
-};
-function changeHP(amount) {
-    this.hp -= amount;
-
-    if (this.hp <= 0) {
-        this.hp = 0;
-    }
-}
-function elHP() {
-    return document.querySelector(`.player${this.player} .life`)
-}
-function renderHP() {
-    let $hpBar = this.elHP();
-
-    $hpBar.style.width = `${this.hp}%`;
-}
 export function enemyAttack() {
     const hit = ATTACK[getRandom(0, 2)];
     const defence = ATTACK[getRandom(0, 2)];

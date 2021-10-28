@@ -42,24 +42,24 @@ const logs = {
 
 const $chat = document.querySelector('.chat');
 
-export function generateLogs(type, player1, player2, kickValue) {
+export const generateLogs = (type, { name } = {}, { name: P2Name, hp}, kickValue) => {
     const date = new Date();
     const time = `${normilizeTime(date.getHours())}:${normilizeTime(date.getMinutes())}`;
 
-    function getText() {
+    const getText = () => {
         switch (type) {
             case 'start':
-                return logs[type].replace('[time]', time).replace('[player1]', player1.name).replace('[player2]', player2.name);
+                return logs[type].replace('[time]', time).replace('[player1]', name).replace('[player2]', P2Name);
 
             case 'hit':
-                let log = logs[type][getRandom(0, type.length)].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
-                return `${time} - ${log} ${player2.name} - ${kickValue}hp, (${player2.hp}/100)`
+                let log = logs[type][getRandom(0, type.length)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
+                return `${time} - ${log} ${P2Name} - ${kickValue}hp, (${hp}/100)`
 
             case 'defence':
-                return logs[type][getRandom(0, type.length)].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
+                return logs[type][getRandom(0, type.length)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
 
             case 'end':
-                return logs[type][getRandom(0, type.length)].replace('[playerWins]', player1.name).replace('[playerLose]', player2.name);
+                return logs[type][getRandom(0, type.length)].replace('[playerWins]', name).replace('[playerLose]', P2Name);
 
             case 'draw':
                 return logs[type];
