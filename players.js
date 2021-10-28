@@ -49,50 +49,7 @@ export const player2 = new Player({
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
 });
-console.log(player1)
 
-// export const player1 = {
-//     player: 1,
-//     name: 'Kitana',
-//     hp: 100,
-//     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-//     weapon: ['1', '2', '3'],
-//     attack,
-//     changeHP,
-//     elHP,
-//     renderHP
-// }
-
-// export const player2 = {
-//     player: 2,
-//     name: 'Liu Kang',
-//     hp: 100,
-//     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
-//     weapon: ['1', '2', '3'],
-//     attack,
-//     changeHP,
-//     elHP,
-//     renderHP
-// }
-
-// export function attack() {
-//     console.log(`${this.name} Fight`)
-// };
-// function changeHP(amount) {
-//     this.hp -= amount;
-
-//     if (this.hp <= 0) {
-//         this.hp = 0;
-//     }
-// }
-// function elHP() {
-//     return document.querySelector(`.player${this.player} .life`)
-// }
-// function renderHP() {
-//     let $hpBar = this.elHP();
-
-//     $hpBar.style.width = `${this.hp}%`;
-// }
 export function enemyAttack() {
     const hit = ATTACK[getRandom(0, 2)];
     const defence = ATTACK[getRandom(0, 2)];
