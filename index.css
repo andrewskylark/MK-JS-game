@@ -53,7 +53,6 @@ body {
     left: 50%;
     margin-left: -105px;
     transform: translate(-205%, 0px);
-    border: 1px solid blue;
 }
 
 .playerAi {
@@ -65,7 +64,6 @@ body {
     right: 50%;
     margin-right: -105px;
     transform: translate(205%, 0px);
-    border: 1px solid red
 }
 
 .player img,

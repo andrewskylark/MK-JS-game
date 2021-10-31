@@ -44,7 +44,7 @@ export const createReloadBtn = () => {
 
     $btn.innerText = 'RESTART';
     $btn.addEventListener('click', () => {
-        window.location.reload();
+        window.location.pathname = './index.html';
     })
     $div.appendChild($btn);
 

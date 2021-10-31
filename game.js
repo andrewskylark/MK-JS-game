@@ -1,7 +1,6 @@
-import { getRandom } from "./utils.js";
 import { generateLogs } from "./logs.js";
 import { createPlayer, createResultsTitle, createReloadBtn } from "./dom.js";
-import { Player, playerAttack, enemyAttack } from "./players.js";
+import { Player, playerAttack } from "./players.js";
 
 const arenas = document.querySelector('.arenas');
 let player1;
