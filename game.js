@@ -1,8 +1,11 @@
+import { getRandom } from "./utils.js";
 import { generateLogs } from "./logs.js";
 import { createPlayer, createResultsTitle, createReloadBtn } from "./dom.js";
-import { player1, player2, playerAttack, enemyAttack } from "./players.js";
+import { Player, playerAttack, enemyAttack } from "./players.js";
 
 const arenas = document.querySelector('.arenas');
+let player1;
+let player2;
 
 class Game {
     constructor(selector, event) {
@@ -10,7 +13,25 @@ class Game {
         this.evt = event;
     }
 
-    start = () => {
+   getPlayers = async () => {
+        const body = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+        return body;
+    }
+
+    start = async () => {
+        const players = await this.getPlayers();
+        const p1 = players[getRandom(0, players.length)];
+        const p2 = players[getRandom(0, players.length)];
+       
+        player1 = new Player({
+            ...p1,
+            player: 1,
+        });
+        player2 = new Player({
+            ...p2,
+            player: 2,
+        });
+
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
 
@@ -22,7 +43,7 @@ class Game {
         if (player1.hp === 0 || player2.hp === 0) {
             arenas.appendChild(createReloadBtn());
         }
-    
+
         if (player1.hp === 0 && player1.hp < player2.hp) {
             arenas.appendChild(createResultsTitle(player2.name));
             generateLogs('end', player2, player1)
@@ -34,13 +55,13 @@ class Game {
             generateLogs('draw')
         }
     }
-    
+
     gameHandler = (evt) => {
         evt.preventDefault();
-    
+
         const enemyMove = enemyAttack();
         const playerMove = playerAttack();
-    
+
         if (playerMove.hit !== enemyMove.defence) {
             player2.changeHP(enemyMove.value);
             player2.renderHP();
@@ -55,7 +76,7 @@ class Game {
         } else {
             generateLogs('defence', player2, player1);
         }
-    
+
         this.showResults();
     };
 }
