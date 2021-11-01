@@ -9,13 +9,12 @@ export const HIT = {
 }
 export const ATTACK = ['head', 'body', 'foot'];
 
-class Player {
+export class Player {
     constructor(props) {
         this.player = props.player;
         this.name = props.name;
         this.hp = props.hp;
         this.img = props.img;
-        // this.weapon = props.weapon;
     }
 
     attack = () => {
@@ -37,18 +36,6 @@ class Player {
         $hpBar.style.width = `${this.hp}%`;
     }
 }
-export const player1 = new Player({
-    player: 1,
-    name: 'Kitana',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-});
-export const player2 = new Player({
-    player: 2,
-    name: 'Liu Kang',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
-});
 
 export function enemyAttack() {
     const hit = ATTACK[getRandom(0, 2)];
