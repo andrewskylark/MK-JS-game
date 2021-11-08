@@ -78,6 +78,7 @@ body {
 }
 
 .parent {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -159,4 +160,29 @@ body {
 
 .character img {
     width: 100%;
+}
+
+.sound-btn {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    transform: translate(-40%, -40%);
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    background-image: url("./assets/volume-mute.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90%;
+
+    cursor: pointer;
+}
+
+.sound-btn.on {
+    background-image: url("./assets/volume.svg");
+    background-size: 100%;
+    background-position: 2px 48%;
 }

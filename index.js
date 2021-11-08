@@ -1,8 +1,13 @@
 const $parent = document.querySelector('.parent');
 const $player = document.querySelector('.player');
 const $playerAi = document.querySelector('.playerAi');
+const $audio = document.querySelector('.audio');
+const $music = $audio.querySelector('.choose');
+const $soundBtn = $parent.querySelector('.sound-btn');
 
-const createElement = (tag, className) => {
+let soundOn = false;
+
+const createElement = (tag, className, srcName) => {
     const $tag = document.createElement(tag);
     if (className) {
         if (Array.isArray(className)) {
@@ -12,10 +17,46 @@ const createElement = (tag, className) => {
         } else {
             $tag.classList.add(className);
         }
-
+    }
+    if (srcName) {
+        $tag.src = `assets/sounds/${srcName}.mp3`;
     }
 
     return $tag;
+}
+const createPlayerNameSound = async (tag, className, srcName) => {
+
+    // try {
+    //     let $audioName = createElement(tag, className, srcName);
+    //     $audio.appendChild($audioName);
+    //     $audioName.play();
+    // } catch {
+    //     console.log(err)
+    //     let errName = createElement('audio', 'excellent', 'excellent');
+    //     $audio.appendChild(errName);
+    //     errName.play();
+    // }
+
+    try {
+
+        console.log('Начало блока try');  // (1) <--
+        let $audioName = createElement(tag, className, srcName);
+        $audio.appendChild($audioName);
+
+        await $audioName.play();
+        // ошибка, переменная не определена!
+
+        console.log('Конец блока try');  // (2)
+
+    } catch (e) {
+
+        console.log('Ошибка ' + e.name + ":" + e.message + "\n" + e.stack); // (3) <--
+        let errName = createElement('audio', 'excellent', 'excellent');
+        $audio.appendChild(errName);
+        errName.play();
+    }
+
+    console.log("Потом код продолжит выполнение...");
 }
 
 function createEmptyPlayerBlock() {
@@ -47,12 +88,32 @@ const setAiPlayer = async (set = false) => {
     $playerAi.appendChild($img);
 
     if (set) {
+        if (soundOn) {
+            let name = playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
+            createPlayerNameSound('audio', name, name);
+        }
         localStorage.setItem('player2', JSON.stringify(playerAi));
     }
 }
 
+$soundBtn.addEventListener('click', () => {
+    if (!$soundBtn.classList.contains('on')) {
+        $soundBtn.classList.add('on');
+        $music.play();
+        soundOn = true;
+    } else {
+        $soundBtn.classList.remove('on');
+        $music.pause();
+        soundOn = false;
+    }
+    localStorage.setItem('soundOn', soundOn);
+    console.log(localStorage.getItem('soundOn'));
+})
+
 async function init() {
     localStorage.removeItem('player1');
+    localStorage.removeItem('player2');
+    localStorage.removeItem('soundOn');
 
     const players = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
 
@@ -65,10 +126,8 @@ async function init() {
         const el = createElement('div', ['character', `div${item.id}`]);
         const img = createElement('img');
 
-        // console.log(item)
-
         el.addEventListener('mousemove', () => {
-            if (imgSrc === null) {
+            if (imgSrc === null && choice === false) {
                 imgSrc = item.img;
                 const $img = createElement('img');
                 $img.src = imgSrc;
@@ -85,19 +144,24 @@ async function init() {
 
         el.addEventListener('click', () => {
             imgSrc = null;
-            $player.innerHTML = '';//clear player img and set agaon on click;
+            $player.innerHTML = '';//clear player img and set again on click;
 
             imgSrc = item.img;
             const $img = createElement('img');
             $img.src = imgSrc;
-            $player.appendChild($img);
-            console.log('set');
+            $player.appendChild($img);//render player preview
+
             choice = true;
-
-            localStorage.setItem('player1', JSON.stringify(item));
             el.classList.add('active');
+            localStorage.setItem('player1', JSON.stringify(item));
 
-            setAiPlayer()//imitation of Ai choices, set localStorage on last one
+            if (soundOn) {
+                let name = item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
+                createPlayerNameSound('audio', name, name);
+            }
+
+            //imitation of Ai choices, set localStorage on last one
+            setAiPlayer()
             setTimeout(() => {
                 setAiPlayer()
             }, 400);
@@ -108,22 +172,22 @@ async function init() {
                 setAiPlayer()
             }, 1500);
             setTimeout(() => {
-                setAiPlayer(set = true)
+                setAiPlayer()
             }, 2200);
             setTimeout(() => {
                 setAiPlayer(set = true)
             }, 3400);
 
-            setTimeout(() => {
-                if (imgSrc) {
-                    imgSrc = null;
-                    $player.innerHTML = '';
-                }//clear player img
-            }, 3900);
+            // setTimeout(() => {
+            //     if (imgSrc) {
+            //         imgSrc = null;
+            //         $player.innerHTML = '';
+            //     }//clear player img
+            // }, 3900);
 
             setTimeout(() => {
                 window.location.pathname = './game.html';
-            }, 4000);
+            }, 4500);
         });
 
         img.src = item.avatar;

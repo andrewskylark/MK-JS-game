@@ -1,10 +1,18 @@
 import { generateLogs } from "./logs.js";
 import { createPlayer, createResultsTitle, createReloadBtn } from "./dom.js";
 import { Player, playerAttack } from "./players.js";
+import { getRandom } from "./utils.js";
 
+const ARENAS = 5;
 const arenas = document.querySelector('.arenas');
+const $audio = document.querySelector('.audio');
+const $allMusic = $audio.querySelectorAll('.music');
+const $hit = $audio.querySelector('.hit');
+const $block = $audio.querySelector('.block');
+
 let player1;
 let player2;
+let soundOn = localStorage.getItem('soundOn');
 
 class Game {
     constructor(selector, event) {
@@ -13,14 +21,13 @@ class Game {
     }
 
     getPlayers = async () => {
-        const body = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
-        return body;
+        const playersData = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+        return playersData;
     }
     start = async () => {
-        const players = await this.getPlayers();
-        // const p1 = players[getRandom(0, players.length)];
-        const p1 = JSON.parse(localStorage.getItem('player1'))
-        // const p2 = players[getRandom(0, players.length)];
+        // const players = await this.getPlayers();
+        // const p1 = players[getRandom(0, players.length)];//get random player from data
+        const p1 = JSON.parse(localStorage.getItem('player1'))//parse player data from local storage
         const p2 = JSON.parse(localStorage.getItem('player2'))
 
         player1 = new Player({
@@ -32,9 +39,14 @@ class Game {
             player: 2,
         });
 
+        arenas.classList.replace('arena1', `arena${getRandom(1, ARENAS)}`);//random arena bg
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
-
+        
+        if (soundOn) {
+            $allMusic[getRandom(1, $allMusic.length)].play();
+        }
+        
         generateLogs('start', player1, player2);
         this.$el.addEventListener(this.evt, this.gameHandler);
     }
@@ -72,7 +84,7 @@ class Game {
 
         const playerMoveObj = playerAttack();//get data from checkboxes
         const movesData = await this.getMoves(playerMoveObj);
-        console.log(movesData)
+
         let playerMove = movesData.player1;
         let enemyMove = movesData.player2;
 
@@ -80,18 +92,30 @@ class Game {
             player2.changeHP(enemyMove.value);
             player2.renderHP();
             generateLogs('hit', player1, player2, playerMove.value);
+
+            soundOn ? $hit.play() : '';
         } else {
             generateLogs('defence', player1, player2);
-        }
-        if (enemyMove.hit !== playerMove.defence) {
-            player1.changeHP(playerMove.value);
-            player1.renderHP();
-            generateLogs('hit', player2, player1, enemyMove.value);
-        } else {
-            generateLogs('defence', player2, player1);
-        }
 
-        this.showResults();
+            soundOn ? $block.play() : '';
+        }
+        setTimeout(() => {
+            if (enemyMove.hit !== playerMove.defence) {
+                player1.changeHP(playerMove.value);
+                player1.renderHP();
+                generateLogs('hit', player2, player1, enemyMove.value);
+    
+                soundOn ? $hit.play() : '';
+            } else {
+                generateLogs('defence', player2, player1);
+    
+                soundOn ? $block.play() : '';
+            }
+        }, 700);
+        
+        setTimeout(() => {
+            this.showResults();
+        }, 800);
     };
 }
 

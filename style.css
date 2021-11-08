@@ -10,7 +10,6 @@
     font-display: swap;
 }
 
-
 *,
 *:before,
 *:after {
@@ -212,7 +211,7 @@ body {
 .fight {
     position: absolute;
     z-index: 100;
-    top: 30%;
+    top: 10%;
     width: 300px;
     left: 50%;
     transform: translate(-50%, 0%);
@@ -407,4 +406,8 @@ input[type=radio]:checked + label > span::before {
 }
 input[type=radio]:checked + label > span:hover {
     background: none;
+}
+
+.audio {
+    display: none;
 }
