@@ -24,39 +24,16 @@ const createElement = (tag, className, srcName) => {
 
     return $tag;
 }
-const createPlayerNameSound = async (tag, className, srcName) => {
-
-    // try {
-    //     let $audioName = createElement(tag, className, srcName);
-    //     $audio.appendChild($audioName);
-    //     $audioName.play();
-    // } catch {
-    //     console.log(err)
-    //     let errName = createElement('audio', 'excellent', 'excellent');
-    //     $audio.appendChild(errName);
-    //     errName.play();
-    // }
-
+const createPlayerNameSound = async (tag, className, srcName, errSrc) => {
     try {
-
-        console.log('Начало блока try');  // (1) <--
         let $audioName = createElement(tag, className, srcName);
         $audio.appendChild($audioName);
-
         await $audioName.play();
-        // ошибка, переменная не определена!
-
-        console.log('Конец блока try');  // (2)
-
     } catch (e) {
-
-        console.log('Ошибка ' + e.name + ":" + e.message + "\n" + e.stack); // (3) <--
-        let errName = createElement('audio', 'excellent', 'excellent');
+        let errName = createElement('audio', errSrc, errSrc);
         $audio.appendChild(errName);
         errName.play();
     }
-
-    console.log("Потом код продолжит выполнение...");
 }
 
 function createEmptyPlayerBlock() {
@@ -157,7 +134,7 @@ async function init() {
 
             if (soundOn) {
                 let name = item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
-                createPlayerNameSound('audio', name, name);
+                createPlayerNameSound('audio', name, name, 'excellent');
             }
 
             //imitation of Ai choices, set localStorage on last one

@@ -2,6 +2,7 @@ import { generateLogs } from "./logs.js";
 import { createPlayer, createResultsTitle, createReloadBtn } from "./dom.js";
 import { Player, playerAttack } from "./players.js";
 import { getRandom } from "./utils.js";
+// import { createElement, createPlayerNameSound } from "./index.js";
 
 const ARENAS = 5;
 const arenas = document.querySelector('.arenas');
@@ -9,6 +10,9 @@ const $audio = document.querySelector('.audio');
 const $allMusic = $audio.querySelectorAll('.music');
 const $hit = $audio.querySelector('.hit');
 const $block = $audio.querySelector('.block');
+const $pathetic = $audio.querySelector('.pathetic');
+const $wellDone = $audio.querySelector('.welldone');
+const $neverWin = $audio.querySelector('.neverwin');
 
 let player1;
 let player2;
@@ -69,13 +73,19 @@ class Game {
 
         if (player1.hp === 0 && player1.hp < player2.hp) {
             arenas.appendChild(createResultsTitle(player2.name));
-            generateLogs('end', player2, player1)
+            generateLogs('end', player2, player1);
+
+            soundOn ? $pathetic.play() : '';
         } else if (player2.hp === 0 && player2.hp < player1.hp) {
             arenas.appendChild(createResultsTitle(player1.name));
             generateLogs('end', player1, player2)
+
+            soundOn ? $wellDone.play() : '';
         } else if (player1.hp === 0 && player2.hp === 0) {
             arenas.appendChild(createResultsTitle());
-            generateLogs('draw')
+            generateLogs('draw');
+
+            soundOn ? $neverWin.play() : '';
         }
     }
 

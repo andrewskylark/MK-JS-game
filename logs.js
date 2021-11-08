@@ -52,14 +52,14 @@ export const generateLogs = (type, { name } = {}, { name: P2Name, hp}, kickValue
                 return logs[type].replace('[time]', time).replace('[player1]', name).replace('[player2]', P2Name);
 
             case 'hit':
-                let log = logs[type][getRandom(0, type.length)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
+                let log = logs[type][getRandom(0, logs[type].length - 1)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
                 return `${time} - ${log} ${P2Name} - ${kickValue}hp, (${hp}/100)`
 
             case 'defence':
-                return logs[type][getRandom(0, type.length)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
+                return logs[type][getRandom(0, logs[type].length - 1)].replace('[playerKick]', name).replace('[playerDefence]', P2Name);
 
             case 'end':
-                return logs[type][getRandom(0, type.length)].replace('[playerWins]', name).replace('[playerLose]', P2Name);
+                return logs[type][getRandom(0, logs[type].length - 1)].replace('[playerWins]', name).replace('[playerLose]', P2Name);
 
             case 'draw':
                 return logs[type];
@@ -67,6 +67,7 @@ export const generateLogs = (type, { name } = {}, { name: P2Name, hp}, kickValue
             default:
                 break;
         }
+        
     }
 
     const text = getText();
