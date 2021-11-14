@@ -56,6 +56,13 @@ const setAiPlayer = async (set = false) => {
     clearAiPlayer();
 
     const playerAi = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose').then(res => res.json());
+
+    // let name = playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
+    const simplifyPlayerName = () => playerAi.id === 12 ?
+        'subzero2' :
+        playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
+
+    const $p2Img = document.querySelector('.p2');
     const avatarAi = document.querySelector(`.parent .div${playerAi.id}`)
     avatarAi.classList.add('activeAi');
 
@@ -66,9 +73,9 @@ const setAiPlayer = async (set = false) => {
 
     if (set) {
         if (soundOn) {
-            let name = playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
-            createPlayerNameSound('audio', name, name);
+            createPlayerNameSound('audio', simplifyPlayerName(), simplifyPlayerName());
         }
+        $p2Img.src = `./assets/moves/${simplifyPlayerName()}/versus.gif`;//set p2 versus prteview
         localStorage.setItem('player2', JSON.stringify(playerAi));
     }
 }
@@ -84,7 +91,6 @@ $soundBtn.addEventListener('click', () => {
         soundOn = false;
     }
     localStorage.setItem('soundOn', soundOn);
-    console.log(localStorage.getItem('soundOn'));
 })
 
 async function init() {
@@ -93,6 +99,9 @@ async function init() {
     localStorage.removeItem('soundOn');
 
     const players = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+
+    const $vsScreen = document.querySelector('.vs');
+    const $p1Img = document.querySelector('.p1');
 
     let imgSrc = null;
     let choice = false;
@@ -120,6 +129,11 @@ async function init() {
         });
 
         el.addEventListener('click', () => {
+            // let name = item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
+            const simplifyPlayerName = () => item.id === 12 ?
+                'subzero2' :
+                item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
+
             imgSrc = null;
             $player.innerHTML = '';//clear player img and set again on click;
 
@@ -132,9 +146,10 @@ async function init() {
             el.classList.add('active');
             localStorage.setItem('player1', JSON.stringify(item));
 
+            $p1Img.src = `./assets/moves/${simplifyPlayerName()}/versus.gif`;//set p1 versus prteview
+
             if (soundOn) {
-                let name = item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
-                createPlayerNameSound('audio', name, name, 'excellent');
+                createPlayerNameSound('audio', simplifyPlayerName(), simplifyPlayerName(), 'excellent');
             }
 
             //imitation of Ai choices, set localStorage on last one
@@ -161,10 +176,13 @@ async function init() {
             //         $player.innerHTML = '';
             //     }//clear player img
             // }, 3900);
+            setTimeout(() => {
+                $vsScreen.style.display = 'block';
+            }, 4500);
 
             setTimeout(() => {
                 window.location.pathname = './game.html';
-            }, 4500);
+            }, 6000);
         });
 
         img.src = item.avatar;

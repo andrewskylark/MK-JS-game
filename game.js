@@ -5,6 +5,11 @@ import { getRandom } from "./utils.js";
 // import { createElement, createPlayerNameSound } from "./index.js";
 
 const ARENAS = 5;
+const hitTypeMap = {
+    head: `high`,
+    body: `mid`,
+    foot: `low`
+  };
 const arenas = document.querySelector('.arenas');
 const $audio = document.querySelector('.audio');
 const $allMusic = $audio.querySelectorAll('.music');
@@ -100,6 +105,8 @@ class Game {
 
         let playerMove = movesData.player1;
         let enemyMove = movesData.player2;
+        // let playerHit = hitTypeMap[playerMove.hit];
+        // let enemyHit = hitTypeMap[enemyMove.hit];
 
         if (playerMove.hit !== enemyMove.defence) {
             player2.changeHP(enemyMove.value);
@@ -107,11 +114,12 @@ class Game {
             generateLogs('hit', player1, player2, playerMove.value);
 
             soundOn ? $hit.play() : '';
-            player1.attack();
+           
+            player1.attack(hitTypeMap[playerMove.hit]);
             player2.gothit();
-        } else {
+        } else { //if p2 block
             generateLogs('defence', player1, player2);
-            player1.attack();
+            player1.attack(hitTypeMap[playerMove.hit]);
             player2.block();
             soundOn ? $block.play() : '';
         }
@@ -121,13 +129,14 @@ class Game {
                 player1.changeHP(playerMove.value);
                 player1.renderHP();
                 generateLogs('hit', player2, player1, enemyMove.value);
-                player2.attack();
+
+                player2.attack(hitTypeMap[enemyMove.hit]);
                 player1.gothit();
 
                 soundOn ? $hit.play() : '';
             } else {
                 generateLogs('defence', player2, player1);
-                player2.attack();
+                player2.attack(hitTypeMap[enemyMove.hit]);
                 player1.block();
                 soundOn ? $block.play() : '';
             }

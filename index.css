@@ -186,3 +186,42 @@ body {
     background-size: 100%;
     background-position: 2px 48%;
 }
+
+.vs {
+    display: none;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    min-width: 1024px;
+    top: 0;
+    left: 0;
+    background: url('./assets/versus.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    z-index: 100;
+}
+
+.vs .vs-gif {
+    position: absolute;
+    height: 10vh;
+    width: 10vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.vs .p1,
+.vs .p2 {
+    position: absolute;
+    height: 45vh;
+    width: auto;
+    bottom: 0;
+    left: 0;
+}
+
+.vs .p2 {
+    right: 0;
+    left: auto;
+    transform: scaleX(-1);
+}

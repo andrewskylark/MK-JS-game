@@ -22,23 +22,23 @@ export class Player {
         'subzero2' :
         this.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
 
-    attack = async () => {
+    attack = async (type) => {
         let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.src = `./assets/moves/${this.normalizeName()}/kick.gif`;
-        await sleep(700);
-        $img.src = this.img;
+        $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
+        // await sleep(700);
+        // $img.src = this.img;
     };
     block = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
-        await sleep(700);
-        $img.src = this.img;
+        // await sleep(700);
+        // $img.src = this.img;
     };
     gothit = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
-        await sleep(700);
-        $img.src = this.img;
+        // await sleep(700);
+        // $img.src = this.img;
     };
     fall = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
