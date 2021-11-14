@@ -47,9 +47,9 @@ class Game {
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
         
-        if (soundOn) {
-            $allMusic[getRandom(1, $allMusic.length)].play();
-        }
+        // if (soundOn) {
+        //     $allMusic[getRandom(1, $allMusic.length)].play();
+        // }
         
         generateLogs('start', player1, player2);
         this.$el.addEventListener(this.evt, this.gameHandler);
@@ -71,20 +71,23 @@ class Game {
             arenas.appendChild(createReloadBtn());
         }
 
-        if (player1.hp === 0 && player1.hp < player2.hp) {
+        if (player1.hp === 0 && player1.hp < player2.hp) {//p1 lost
             arenas.appendChild(createResultsTitle(player2.name));
             generateLogs('end', player2, player1);
-
+            player1.fall();
+            player2.win();
             soundOn ? $pathetic.play() : '';
-        } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        } else if (player2.hp === 0 && player2.hp < player1.hp) {//p1 wins
             arenas.appendChild(createResultsTitle(player1.name));
             generateLogs('end', player1, player2)
-
+            player2.fall();
+            player1.win();
             soundOn ? $wellDone.play() : '';
         } else if (player1.hp === 0 && player2.hp === 0) {
             arenas.appendChild(createResultsTitle());
             generateLogs('draw');
-
+            player1.fall();
+            player2.fall();
             soundOn ? $neverWin.play() : '';
         }
     }
@@ -104,24 +107,31 @@ class Game {
             generateLogs('hit', player1, player2, playerMove.value);
 
             soundOn ? $hit.play() : '';
+            player1.attack();
+            player2.gothit();
         } else {
             generateLogs('defence', player1, player2);
-
+            player1.attack();
+            player2.block();
             soundOn ? $block.play() : '';
         }
+        //p2 attack move
         setTimeout(() => {
             if (enemyMove.hit !== playerMove.defence) {
                 player1.changeHP(playerMove.value);
                 player1.renderHP();
                 generateLogs('hit', player2, player1, enemyMove.value);
-    
+                player2.attack();
+                player1.gothit();
+
                 soundOn ? $hit.play() : '';
             } else {
                 generateLogs('defence', player2, player1);
-    
+                player2.attack();
+                player1.block();
                 soundOn ? $block.play() : '';
             }
-        }, 700);
+        }, 750);
         
         setTimeout(() => {
             this.showResults();

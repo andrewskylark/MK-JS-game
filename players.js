@@ -1,4 +1,4 @@
-import { getRandom } from "./utils.js";
+import { getRandom, sleep } from "./utils.js";
 
 const $form = document.querySelector('.control');
 
@@ -11,28 +11,52 @@ export const ATTACK = ['head', 'body', 'foot'];
 
 export class Player {
     constructor(props) {
+        this.id = props.id;
         this.player = props.player;
         this.name = props.name;
         this.hp = props.hp;
         this.img = props.img;
     }
 
-    attack = () => {
-        console.log(`${this.name} Fight`);
+    normalizeName = () => this.id === 12 ? //SUB-ZERO => subzero
+        'subzero2' :
+        this.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
+
+    attack = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        $img.src = `./assets/moves/${this.normalizeName()}/kick.gif`;
+        await sleep(700);
+        $img.src = this.img;
     };
-    changeHP = (amount) => {
-        this.hp -= amount;
-    
-        if (this.hp <= 0) {
-            this.hp = 0;
-        }
-    }
+    block = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
+        await sleep(700);
+        $img.src = this.img;
+    };
+    gothit = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        $img.src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
+        await sleep(700);
+        $img.src = this.img;
+    };
+    fall = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        await sleep(701);
+        $img.src = `./assets/moves/${this.normalizeName()}/falling.gif`;
+    };
+    win = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        await sleep(710);
+        $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
+    };
+
+    changeHP = (amount) => this.hp >= amount ? this.hp -= amount : this.hp = 0;
     elHP = () => {
         return document.querySelector(`.player${this.player} .life`)
     }
     renderHP = () => {
         let $hpBar = this.elHP();
-    
         $hpBar.style.width = `${this.hp}%`;
     }
 }
