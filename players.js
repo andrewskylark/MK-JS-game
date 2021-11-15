@@ -1,4 +1,5 @@
 import { getRandom, sleep } from "./utils.js";
+import { createEl } from "./dom.js";
 
 const $form = document.querySelector('.control');
 
@@ -25,34 +26,49 @@ export class Player {
     attack = async (type) => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
-        await sleep(700);
+        await sleep(600);
         $img.src = this.img;
     };
     block = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
-        await sleep(700);
+        await sleep(600);
         $img.src = this.img;
     };
     gothit = async () => {
+        console.log('gothit')
         let $img = document.querySelector(`.player${this.player} .character img`);
+        let $wrapper = document.querySelector(`.player${this.player} .character`);
+        let $blood = createEl('img', 'blood-hit');
+        $blood.src = `./assets/moves/blood-hit.gif`;
         $img.src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
-        await sleep(700);
+
+        $wrapper.appendChild($blood);
+
+        await sleep(300);
+        console.log('gothit 300')
+
+        $blood.remove();
+        
+        await sleep(200);
+        console.log('gothit 300 2')
         $img.src = this.img;
     };
     fall = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
-        await sleep(701);
+        // await sleep(801);
         $img.src = `./assets/moves/${this.normalizeName()}/falling.gif`;
     };
     win = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
-        await sleep(710);
+        // await sleep(710);
         $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
     };
     dizzy = async () => {
+        console.log('dizzy')
         let $img = document.querySelector(`.player${this.player} .character img`);
         await sleep(710);
+        console.log('dizzy 710')
         $img.src = `./assets/moves/${this.normalizeName()}/dizzy.gif`;
     };
     changeAnimation = async (type) => {

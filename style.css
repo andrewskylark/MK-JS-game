@@ -219,6 +219,23 @@ body {
     transform: translate(-50%, 0);
 }
 
+.character .blood-hit {
+    position: absolute;
+    height: 50%;
+    top: 0;
+    bottom: auto;
+}
+
+.player1 .character .blood-hit {
+    left: 0;
+    transform: translateY(-30%) translateX(-57%);
+}
+
+.player2 .character .blood-hit {
+    right: 0;
+    transform: scaleX(-1) translateY(-30%) translateX(0%);;
+}
+
 .fight {
     position: absolute;
     z-index: 100;

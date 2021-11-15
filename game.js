@@ -1,8 +1,7 @@
 import { generateLogs } from "./logs.js";
-import { createPlayer, createResultsTitle, createReloadBtn, createFinisherTitle, createEl } from "./dom.js";
+import { createPlayer, createResultsTitle, createReloadBtn, createFinisherTitle, createEl, createAudioEl } from "./dom.js";
 import { Player, playerAttack } from "./players.js";
 import { getRandom, sleep } from "./utils.js";
-// import { createElement, createPlayerNameSound } from "./index.js";
 
 const ARENAS = 5;
 const hitTypeMap = {
@@ -74,19 +73,28 @@ class Game {
                 case 'high':
                     winner.changeAnimation(type);
                     soundOn ? $hit.play() : '';
-                    await sleep(500);
+                    await sleep(200);
+                    loser.gothit();
+                    await sleep(801);
+                    winner.changeAnimation('win');
                     loser.changeAnimation('falling');
                     break;
                 case 'mid':
                     winner.changeAnimation(type);
+                    await sleep(200);
+                    loser.gothit();
                     soundOn ? $hit.play() : '';
-                    await sleep(500);
+                    await sleep(801);
+                    winner.changeAnimation('win');
                     loser.changeAnimation('falling');
                     break;
                 case 'low':
                     winner.changeAnimation(type);
+                    await sleep(200);
+                    loser.gothit();
                     soundOn ? $hit.play() : '';
-                    await sleep(500);
+                    await sleep(801);
+                    winner.changeAnimation('win');
                     loser.changeAnimation('falling');
                     break;
                 default:
@@ -116,9 +124,9 @@ class Game {
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
 
-        // if (soundOn) {
-        //     $allMusic[getRandom(1, $allMusic.length)].play();
-        // }
+        if (soundOn) {
+            $allMusic[getRandom(1, $allMusic.length)].play();
+        }
         await sleep (1600);
         player1.walking('left');
         player2.walking('right');
@@ -146,7 +154,9 @@ class Game {
 
         if (player1.hp === 0 && player1.hp < player2.hp) {//p1 lost
             // arenas.appendChild(createResultsTitle(player2.name));
+            await sleep(601);
             player1.changeAnimation('dizzy');
+            console.log('dizzy finish')
             let finisherType = FINISHERS[getRandom(0, FINISHERS.length - 1)];
             
             await sleep(2000);
@@ -178,7 +188,15 @@ class Game {
                 $finisherForm.style.display = 'none';
 
                 setTimeout(() => {
+                    let name = player1.name.replace(/[^a-zа-яё]/gi, '').toLowerCase()
                     arenas.appendChild(createResultsTitle(player1.name));
+                    if (soundOn) {
+                        createAudioEl($audio, name);
+                        setTimeout(() => {
+                            createAudioEl($audio, 'wins');
+                        }, 600);
+                    }
+
                 }, 3000);
                 setTimeout(() => {
                     arenas.appendChild(createFinisherTitle(finisher, 'finisher'));
