@@ -1,4 +1,4 @@
-const createEl = (tagName, className) => {
+export const createEl = (tagName, className) => {
     const el = document.createElement(tagName);
     if (className) {
         el.classList.add(className);
@@ -47,6 +47,20 @@ export const createReloadBtn = () => {
         window.location.pathname = './index.html';
     })
     $div.appendChild($btn);
+
+    return $div;
+}
+export const createFinisherTitle = (type, className) => {
+    const $div = createEl('div', className);
+    const $img = createEl('img', 'finisher-img');
+    const $audio = createEl('audio');
+
+    $img.src = `./assets/${type}.gif`
+    $audio.src = `./assets/sounds/${type}.mp3`
+
+    $div.appendChild($img);
+    $div.appendChild($audio);
+    $audio.play();
 
     return $div;
 }

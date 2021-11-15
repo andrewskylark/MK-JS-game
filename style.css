@@ -67,7 +67,8 @@ body {
 
 .arenas {
     width: 786px;
-    height: 578px;
+    /* height: 578px; */
+    height: 550px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -170,15 +171,22 @@ body {
 
 .chat {
     width: 786px;
-    height: 30vh;
+    /* height: 30vh; */
+    height: calc(100vh - 550px);
     background-image: url(./assets/versus.png);
     background-size: cover;
     background-position: center;
     border-top: 4px solid #f5d100;
-    padding: 6px 40px;
+    /* padding: 6px 40px; */
+    padding: 1px 30px;
+    padding-right: 350px;
     overflow: scroll;
     color: white;
     font-family: Arial;
+}
+
+.chat p {
+    margin: 5px 0;
 }
 
 .character {
@@ -186,14 +194,17 @@ body {
     bottom: 20px;
     width: 150px;
     height: 268px;
+    /* transition: all ease 1s; */
 }
 
 .player1 .character {
     left: 60px;
+    transition: left ease-in-out 2s;
 }
 
 .player2 .character {
     right: 60px;
+    transition: right ease-in-out 2s;
 }
 
 .player2 .character img {
@@ -321,11 +332,20 @@ form:invalid button[class=button]:active::after {
 }
 
 .control {
-    position: absolute;
+    /* position: absolute;
     width: 200px;
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000; */
+    position: absolute;
+    width: 200px;
+    bottom: -176px;
+    right: 0;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -335,17 +355,22 @@ form:invalid button[class=button]:active::after {
 
 .inputWrap {
     position: relative;
-    width: 280px;
-    margin-bottom: 24px;
+    /* width: 280px;
+    margin-bottom: 24px; */
+    width: 261px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
 }
 
-.buttonWrap {
+/* .buttonWrap {
     margin-top: 12px;
-}
+} */
 
 .inputWrap h2 {
     text-align: center;
-    margin: 0 auto 20px;
+    /* margin: 0 auto 20px; */
+    margin-right: 5px;
     font-weight: 700;
     font-family: 'Mortal Kombat 3';
     color: #efefef;
@@ -408,6 +433,49 @@ input[type=radio]:checked + label > span:hover {
     background: none;
 }
 
+.finisher-form {
+    display: none;
+    position: absolute;
+    width: 200px;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.finisher-form label span {
+    width: 100px;
+}
+
+.finisher-form .inputWrap {
+    width: fit-content;
+}
+
 .audio {
     display: none;
+}
+
+.finisher {
+    position: absolute;
+    z-index: 100;
+    top: 35%;
+    width: 300px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.finisher img {
+    width: 100%;
+}
+
+.finish-him {
+    position: absolute;
+    z-index: 100;
+    top: 10%;
+    width: 300px;
+    left: 50%;
+    transform: translate(-50%, 0%);
 }

@@ -1,7 +1,7 @@
 import { generateLogs } from "./logs.js";
-import { createPlayer, createResultsTitle, createReloadBtn } from "./dom.js";
+import { createPlayer, createResultsTitle, createReloadBtn, createFinisherTitle, createEl } from "./dom.js";
 import { Player, playerAttack } from "./players.js";
-import { getRandom } from "./utils.js";
+import { getRandom, sleep } from "./utils.js";
 // import { createElement, createPlayerNameSound } from "./index.js";
 
 const ARENAS = 5;
@@ -9,15 +9,17 @@ const hitTypeMap = {
     head: `high`,
     body: `mid`,
     foot: `low`
-  };
+};
 const arenas = document.querySelector('.arenas');
 const $audio = document.querySelector('.audio');
+const $finisherForm = document.querySelector('.finisher-form');
 const $allMusic = $audio.querySelectorAll('.music');
 const $hit = $audio.querySelector('.hit');
 const $block = $audio.querySelector('.block');
 const $pathetic = $audio.querySelector('.pathetic');
 const $wellDone = $audio.querySelector('.welldone');
 const $neverWin = $audio.querySelector('.neverwin');
+const FINISHERS = ['fatality', 'babality', 'animality', 'friendship', 'high', 'low', 'mid'];
 
 let player1;
 let player2;
@@ -32,6 +34,68 @@ class Game {
     getPlayers = async () => {
         const playersData = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
         return playersData;
+    }
+    doFinisher = async (winner, type, loser) => {
+        const getSound = () => {
+            const $sound = createEl('audio');
+            $sound.src = `./assets/sounds/${type}-sound.mp3`;
+            $audio.appendChild($sound);
+            $sound.play()
+        }
+        const getLoserAnimation = async () => {
+            switch (type) {
+                case 'babality':
+                    await sleep(400);
+                    loser.babality();
+                    getSound();
+                    await sleep(600);
+                    winner.changeAnimation('win');
+                    break;
+                case 'friendship':
+                    getSound();
+                    await sleep(400);
+                    winner.changeAnimation(type);
+                    return;
+                case 'animality':
+                    getSound();
+                    await sleep(700);
+                    winner.changeAnimation(type);
+                    console.log(winner);
+                    await sleep(900);
+                    loser.blood();
+                    break;
+                case 'fatality':
+                    getSound();
+                    await sleep(400);
+                    winner.changeAnimation(type);
+                    await sleep(300);
+                    loser.bones();
+                    break;
+                case 'high':
+                    winner.changeAnimation(type);
+                    soundOn ? $hit.play() : '';
+                    await sleep(500);
+                    loser.changeAnimation('falling');
+                    break;
+                case 'mid':
+                    winner.changeAnimation(type);
+                    soundOn ? $hit.play() : '';
+                    await sleep(500);
+                    loser.changeAnimation('falling');
+                    break;
+                case 'low':
+                    winner.changeAnimation(type);
+                    soundOn ? $hit.play() : '';
+                    await sleep(500);
+                    loser.changeAnimation('falling');
+                    break;
+                default:
+                    break;
+            }
+        }
+        // await sleep(300);
+        // loser.changeAnimation(loserType());
+        getLoserAnimation();
     }
     start = async () => {
         // const players = await this.getPlayers();
@@ -51,11 +115,14 @@ class Game {
         arenas.classList.replace('arena1', `arena${getRandom(1, ARENAS)}`);//random arena bg
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
-        
+
         // if (soundOn) {
         //     $allMusic[getRandom(1, $allMusic.length)].play();
         // }
-        
+        await sleep (1600);
+        player1.walking('left');
+        player2.walking('right');
+
         generateLogs('start', player1, player2);
         this.$el.addEventListener(this.evt, this.gameHandler);
     }
@@ -71,30 +138,67 @@ class Game {
         return body;
     }
 
-    showResults = () => {
+    showResults = async () => {
         if (player1.hp === 0 || player2.hp === 0) {
-            arenas.appendChild(createReloadBtn());
+            // arenas.appendChild(createReloadBtn());
+            arenas.appendChild(createFinisherTitle('finish-him', 'finish-him'));
         }
 
         if (player1.hp === 0 && player1.hp < player2.hp) {//p1 lost
+            // arenas.appendChild(createResultsTitle(player2.name));
+            player1.changeAnimation('dizzy');
+            let finisherType = FINISHERS[getRandom(0, FINISHERS.length - 1)];
+            
+            await sleep(2000);
+            this.doFinisher(player2, finisherType, player1); //random finisher by AI
+            
+            await sleep(1500);
             arenas.appendChild(createResultsTitle(player2.name));
-            generateLogs('end', player2, player1);
-            player1.fall();
-            player2.win();
             soundOn ? $pathetic.play() : '';
+            await sleep(3000);
+            if (finisherType !== 'high' && finisherType !== 'mid' && finisherType !== 'low') {
+                arenas.appendChild(createFinisherTitle(finisherType, 'finisher'));
+            }
+            generateLogs('end', player2, player1);
+            
         } else if (player2.hp === 0 && player2.hp < player1.hp) {//p1 wins
-            arenas.appendChild(createResultsTitle(player1.name));
             generateLogs('end', player1, player2)
-            player2.fall();
-            player1.win();
-            soundOn ? $wellDone.play() : '';
+            player2.dizzy();
+            await sleep(1000);
+            $finisherForm.style.display = 'flex';
+            $finisherForm.addEventListener('submit', (evt) => {
+                evt.preventDefault();
+                let finisher;
+                for (let item of $finisherForm) {
+                    if (item.checked) {
+                        finisher = item.value;
+                    }
+                }
+                this.doFinisher(player1, finisher, player2);
+                $finisherForm.style.display = 'none';
+
+                setTimeout(() => {
+                    arenas.appendChild(createResultsTitle(player1.name));
+                }, 3000);
+                setTimeout(() => {
+                    arenas.appendChild(createFinisherTitle(finisher, 'finisher'));
+                }, 5000);
+                
+            })
+            
+            
+            // player1.win();
+            // soundOn ? $wellDone.play() : '';
         } else if (player1.hp === 0 && player2.hp === 0) {
             arenas.appendChild(createResultsTitle());
-            generateLogs('draw');
-            player1.fall();
-            player2.fall();
+            generateLogs('draw', player1, player2);
+            player1.changeAnimation('dizzy');
+            player2.changeAnimation('dizzy');
             soundOn ? $neverWin.play() : '';
         }
+
+        await sleep(4000);
+        arenas.appendChild(createReloadBtn());
     }
 
     gameHandler = async (evt) => {
@@ -114,10 +218,10 @@ class Game {
             generateLogs('hit', player1, player2, playerMove.value);
 
             soundOn ? $hit.play() : '';
-           
+
             player1.attack(hitTypeMap[playerMove.hit]);
             player2.gothit();
-        } else { //if p2 block
+        } else { //if p2 blocks
             generateLogs('defence', player1, player2);
             player1.attack(hitTypeMap[playerMove.hit]);
             player2.block();
@@ -141,7 +245,7 @@ class Game {
                 soundOn ? $block.play() : '';
             }
         }, 750);
-        
+
         setTimeout(() => {
             this.showResults();
         }, 800);

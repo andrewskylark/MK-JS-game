@@ -3,7 +3,7 @@ import { getRandom, sleep } from "./utils.js";
 const $form = document.querySelector('.control');
 
 export const HIT = {
-    head: 30,
+    head: 200,
     body: 25,
     foot: 20,
 }
@@ -25,20 +25,20 @@ export class Player {
     attack = async (type) => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
-        // await sleep(700);
-        // $img.src = this.img;
+        await sleep(700);
+        $img.src = this.img;
     };
     block = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
-        // await sleep(700);
-        // $img.src = this.img;
+        await sleep(700);
+        $img.src = this.img;
     };
     gothit = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
-        // await sleep(700);
-        // $img.src = this.img;
+        await sleep(700);
+        $img.src = this.img;
     };
     fall = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
@@ -50,6 +50,40 @@ export class Player {
         await sleep(710);
         $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
     };
+    dizzy = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        await sleep(710);
+        $img.src = `./assets/moves/${this.normalizeName()}/dizzy.gif`;
+    };
+    changeAnimation = async (type) => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        // await sleep(710);
+        $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
+    };
+    blood = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        // await sleep(710);
+        $img.src = `./assets/moves/blood.gif`;
+    };
+    bones = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        // await sleep(710);
+        $img.src = `./assets/moves/bones.gif`;
+    };
+    babality = async () => {
+        let $img = document.querySelector(`.player${this.player} .character img`);
+        $img.style.height = '20%';
+        $img.src = `./assets/moves/${this.normalizeName()}/babality.gif`;
+    };
+    walking = async (direction) => {
+        let $wrapper = document.querySelector(`.player${this.player} .character`);
+        let $img = document.querySelector(`.player${this.player} .character img`);
+
+        $img.src = `./assets/moves/${this.normalizeName()}/walking.gif`;
+        $wrapper.style[direction] = '240px';
+        await sleep(2000);
+        $img.src = `./assets/moves/${this.normalizeName()}/stance.gif`;
+    }
 
     changeHP = (amount) => this.hp >= amount ? this.hp -= amount : this.hp = 0;
     elHP = () => {
