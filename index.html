@@ -1,33 +1,37 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mortal Kombat</title>
     <link rel="stylesheet" href="index.css">
 </head>
-<body>
-<div class="root">
-    <div class="audio">
-        <audio class="choose" allow="autoplay" src="/assets/music/music-choose.mp3"></audio>
-    </div>
-    <div class="title">
-        SELECT YOUR FIGHTERS
-    </div>
-    <div class="player"></div>
-    <div class="playerAi"></div>
-    <div class="parent">
-        <button class="sound-btn"></button>
-    </div>
 
-    <script src="index.js"></script>
-</div>
-<div class="vs">
-    <img class="p1" src="assets/moves/cyrax/versus.gif"></img>
-    <img class="p2" src="assets/moves/cyrax/versus.gif"></img>
-    <img class="vs-gif" src="assets/vs.gif"></img>
-</div>
+<body>
+    <div class="root">
+        <div class="audio">
+            <audio class="choose" allow="autoplay" src="./assets/music/music-choose.mp3"></audio>
+        </div>
+        <div class="title">
+            SELECT YOUR FIGHTERS
+        </div>
+        <div class="player"></div>
+        <div class="playerAi"></div>
+        <div class="parent">
+            <button class="sound-btn"></button>
+        </div>
+
+        <script src="index.js"></script>
+    </div>
+    <div class="vs">
+        <img class="p1" src="assets/moves/cyrax/versus.gif"></img>
+        <img class="p2" src="assets/moves/cyrax/versus.gif"></img>
+        <img class="vs-gif" src="assets/vs.gif"></img>
+    </div>
 </body>
+
 </html>
