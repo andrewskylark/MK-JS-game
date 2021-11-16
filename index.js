@@ -181,7 +181,7 @@ async function init() {
             }, 4500);
 
             setTimeout(() => {
-                window.location.pathname = './game.html';
+                window.location.pathname = 'game.html';
             }, 6000);
         });
 
