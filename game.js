@@ -67,7 +67,7 @@ class Game {
                     getSound();
                     await sleep(400);
                     winner.changeAnimation(type);
-                    await sleep(300);
+                    await sleep(600);
                     loser.bones();
                     break;
                 case 'high':
