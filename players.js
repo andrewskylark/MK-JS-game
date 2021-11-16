@@ -36,7 +36,6 @@ export class Player {
         $img.src = this.img;
     };
     gothit = async () => {
-        console.log('gothit')
         let $img = document.querySelector(`.player${this.player} .character img`);
         let $wrapper = document.querySelector(`.player${this.player} .character`);
         let $blood = createEl('img', 'blood-hit');
@@ -46,12 +45,10 @@ export class Player {
         $wrapper.appendChild($blood);
 
         await sleep(300);
-        console.log('gothit 300')
 
         $blood.remove();
         
         await sleep(200);
-        console.log('gothit 300 2')
         $img.src = this.img;
     };
     fall = async () => {
@@ -61,14 +58,12 @@ export class Player {
     };
     win = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
+        $img.style.height = '110%';
         // await sleep(710);
         $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
     };
     dizzy = async () => {
-        console.log('dizzy')
         let $img = document.querySelector(`.player${this.player} .character img`);
-        await sleep(710);
-        console.log('dizzy 710')
         $img.src = `./assets/moves/${this.normalizeName()}/dizzy.gif`;
     };
     changeAnimation = async (type) => {

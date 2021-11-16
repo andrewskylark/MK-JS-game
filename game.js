@@ -48,7 +48,7 @@ class Game {
                     loser.babality();
                     getSound();
                     await sleep(600);
-                    winner.changeAnimation('win');
+                    winner.win();
                     break;
                 case 'friendship':
                     getSound();
@@ -59,7 +59,6 @@ class Game {
                     getSound();
                     await sleep(700);
                     winner.changeAnimation(type);
-                    console.log(winner);
                     await sleep(900);
                     loser.blood();
                     break;
@@ -76,7 +75,7 @@ class Game {
                     await sleep(200);
                     loser.gothit();
                     await sleep(801);
-                    winner.changeAnimation('win');
+                    winner.win();
                     loser.changeAnimation('falling');
                     break;
                 case 'mid':
@@ -94,15 +93,14 @@ class Game {
                     loser.gothit();
                     soundOn ? $hit.play() : '';
                     await sleep(801);
-                    winner.changeAnimation('win');
+                    winner.win();
                     loser.changeAnimation('falling');
                     break;
                 default:
                     break;
             }
         }
-        // await sleep(300);
-        // loser.changeAnimation(loserType());
+      
         getLoserAnimation();
     }
     start = async () => {
@@ -125,7 +123,7 @@ class Game {
         arenas.appendChild(createPlayer(player2));
 
         if (soundOn) {
-            $allMusic[getRandom(1, $allMusic.length)].play();
+            $allMusic[getRandom(1, $allMusic.length - 1)].play();
         }
         await sleep (1600);
         player1.walking('left');
@@ -147,16 +145,19 @@ class Game {
     }
 
     showResults = async () => {
-        if (player1.hp === 0 || player2.hp === 0) {
+        if ((player1.hp === 0 && player2.hp !== 0) || ((player1.hp !== 0 && player2.hp === 0))) {
             // arenas.appendChild(createReloadBtn());
             arenas.appendChild(createFinisherTitle('finish-him', 'finish-him'));
         }
-
-        if (player1.hp === 0 && player1.hp < player2.hp) {//p1 lost
+        if (player1.hp === 0 || player2.hp === 0) {
+            await sleep(4000);
+            arenas.appendChild(createReloadBtn());
+        }
+        //p1 lost
+        if (player1.hp === 0 && player1.hp < player2.hp) {
             // arenas.appendChild(createResultsTitle(player2.name));
             await sleep(601);
             player1.changeAnimation('dizzy');
-            console.log('dizzy finish')
             let finisherType = FINISHERS[getRandom(0, FINISHERS.length - 1)];
             
             await sleep(2000);
@@ -170,8 +171,8 @@ class Game {
                 arenas.appendChild(createFinisherTitle(finisherType, 'finisher'));
             }
             generateLogs('end', player2, player1);
-            
-        } else if (player2.hp === 0 && player2.hp < player1.hp) {//p1 wins
+        //p1 wins
+        } else if (player2.hp === 0 && player2.hp < player1.hp) {
             generateLogs('end', player1, player2)
             player2.dizzy();
             await sleep(1000);
@@ -194,7 +195,7 @@ class Game {
                         createAudioEl($audio, name);
                         setTimeout(() => {
                             createAudioEl($audio, 'wins');
-                        }, 600);
+                        }, 900);
                     }
 
                 }, 3000);
@@ -203,8 +204,6 @@ class Game {
                 }, 5000);
                 
             })
-            
-            
             // player1.win();
             // soundOn ? $wellDone.play() : '';
         } else if (player1.hp === 0 && player2.hp === 0) {
@@ -214,9 +213,6 @@ class Game {
             player2.changeAnimation('dizzy');
             soundOn ? $neverWin.play() : '';
         }
-
-        await sleep(4000);
-        arenas.appendChild(createReloadBtn());
     }
 
     gameHandler = async (evt) => {
