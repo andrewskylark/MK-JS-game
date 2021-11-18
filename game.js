@@ -168,7 +168,7 @@ class Game {
             if (finisherType !== 'high' && finisherType !== 'mid' && finisherType !== 'low') {
                 arenas.appendChild(createFinisherTitle(finisherType, 'finisher', soundOn));
             }
-            generateLogs('end', player2, player1);
+            generateLogs('end', player2, player1, null, null, finisherType);
 
         } else if (p1Wins) {
             await sleep(501);//delay for gothit / block animation
@@ -181,7 +181,7 @@ class Game {
                 let finisherType;
                 for (let item of $finisherForm) {
                     if (item.checked) {
-                        finisher = item.value;
+                        finisherType = item.value;
                     }
                 }
                 this.doFinisher(player1, finisherType, player2);
@@ -200,8 +200,8 @@ class Game {
                 }, 3000);
                 setTimeout(() => {
                     arenas.appendChild(createFinisherTitle(finisherType, 'finisher', soundOn));
+                    generateLogs('end', player1, player2, null, null, finisherType)
                 }, 5000);
-                generateLogs('end', player1, player2)
             })
 
         } else if (draw) {
@@ -231,14 +231,14 @@ class Game {
             player2.changeHP(enemyMove.value);
             player2.renderHP();
             soundOn ? $hit.play() : '';
-            generateLogs('hit', player1, player2, playerMove.value);
+            generateLogs('hit', player1, player2, playerMove.hit, playerMove.value);
         } else { //if p2 blocks
             player1.attack(hitTypeMap[playerMove.hit]);
             player2.block();
 
             await sleep(200);
             soundOn ? $block.play() : '';
-            generateLogs('defence', player1, player2);
+            generateLogs('defence', player1, player2, playerMove.hit);
         }
         //p2 attack move
         setTimeout(() => {
@@ -249,13 +249,13 @@ class Game {
                 player1.changeHP(playerMove.value);
                 player1.renderHP();
                 soundOn ? $hit.play() : '';
-                generateLogs('hit', player2, player1, enemyMove.value);
+                generateLogs('hit', player2, player1, enemyMove.hit, enemyMove.value);
             } else {
                 player2.attack(hitTypeMap[enemyMove.hit]);
                 player1.block();
 
                 soundOn ? $block.play() : '';
-                generateLogs('defence', player2, player1);
+                generateLogs('defence', player2, player1, enemyMove.hit);
             }
         }, 750);
 

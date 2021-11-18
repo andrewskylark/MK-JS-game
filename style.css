@@ -189,6 +189,27 @@ body {
     margin: 5px 0;
 }
 
+.chat .p1 {
+    color: #cd0e03;
+}
+
+.chat .p2 {
+    color: blue;
+}
+
+.chat .time {
+    color: #f5d100;
+}
+
+.chat .hit-aim {
+    color: yellow;
+}
+
+.chat img {
+    height: 25px;
+    vertical-align: middle;
+}
+
 .character {
     position: absolute;
     bottom: 20px;
