@@ -58,10 +58,12 @@ export const generateLogs = (type, { name, player } = {}, { name: P2Name, player
                 return `${time} - ${log} <span class="p${player2}">${P2Name}</span> - ${kickValue}hp, (${hp}/100)`
 
             case 'defence':
-                return logs[type][getRandom(0, logs[type].length - 1)]
+                let log = logs[type][getRandom(0, logs[type].length - 1)]
                 .replace('[playerKick]', `<span class="p${player}">${name}</span>`)
                 .replace('[playerDefence]', `<span class="p${player2}">${P2Name}</span>`)
-                .replace('[hitAim]', `<span class="hit-aim">${hitAim}</span>`);;
+                .replace('[hitAim]', `<span class="hit-aim">${hitAim}</span>`);
+
+                return `${time} - ${log}`
 
             case 'end':
                 return logs[type].replace('[playerWins]', `<span class="p${player}">${name}</span>`)
