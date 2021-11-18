@@ -39,7 +39,7 @@ class Game {
             const $sound = createEl('audio');
             $sound.src = `./assets/sounds/${type}-sound.mp3`;
             $audio.appendChild($sound);
-            $sound.play()
+            soundOn ? $sound.play() : '';
         }
         const getLoserAnimation = async () => {
             switch (type) {
@@ -66,7 +66,7 @@ class Game {
                     getSound();
                     await sleep(400);
                     winner.changeAnimation(type);
-                    await sleep(600);
+                    await sleep(800);
                     loser.bones();
                     break;
                 case 'high':
@@ -122,10 +122,9 @@ class Game {
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
 
-        if (soundOn) {
-            $allMusic[getRandom(1, $allMusic.length - 1)].play();
-        }
-        await sleep (1600);
+        soundOn ? $allMusic[getRandom(1, $allMusic.length - 1)].play(): '';
+
+        await sleep (2000);
         player1.walking('left');
         player2.walking('right');
 
@@ -147,16 +146,16 @@ class Game {
     showResults = async () => {
         if ((player1.hp === 0 && player2.hp !== 0) || ((player1.hp !== 0 && player2.hp === 0))) {
             // arenas.appendChild(createReloadBtn());
-            arenas.appendChild(createFinisherTitle('finish-him', 'finish-him'));
+            arenas.appendChild(createFinisherTitle('finish-him', 'finish-him', soundOn));
         }
         if (player1.hp === 0 || player2.hp === 0) {
-            await sleep(4000);
+            // await sleep(10000);
             arenas.appendChild(createReloadBtn());
         }
         //p1 lost
         if (player1.hp === 0 && player1.hp < player2.hp) {
             // arenas.appendChild(createResultsTitle(player2.name));
-            await sleep(601);
+            await sleep(501);
             player1.changeAnimation('dizzy');
             let finisherType = FINISHERS[getRandom(0, FINISHERS.length - 1)];
             
@@ -168,7 +167,7 @@ class Game {
             soundOn ? $pathetic.play() : '';
             await sleep(3000);
             if (finisherType !== 'high' && finisherType !== 'mid' && finisherType !== 'low') {
-                arenas.appendChild(createFinisherTitle(finisherType, 'finisher'));
+                arenas.appendChild(createFinisherTitle(finisherType, 'finisher', soundOn));
             }
             generateLogs('end', player2, player1);
         //p1 wins
@@ -200,7 +199,7 @@ class Game {
 
                 }, 3000);
                 setTimeout(() => {
-                    arenas.appendChild(createFinisherTitle(finisher, 'finisher'));
+                    arenas.appendChild(createFinisherTitle(finisher, 'finisher', soundOn));
                 }, 5000);
                 
             })
@@ -209,6 +208,7 @@ class Game {
         } else if (player1.hp === 0 && player2.hp === 0) {
             arenas.appendChild(createResultsTitle());
             generateLogs('draw', player1, player2);
+            await sleep(601);
             player1.changeAnimation('dizzy');
             player2.changeAnimation('dizzy');
             soundOn ? $neverWin.play() : '';

@@ -35,7 +35,6 @@ const createPlayerNameSound = async (tag, className, srcName, errSrc) => {
         errName.play();
     }
 }
-
 function createEmptyPlayerBlock() {
     const el = createElement('div', ['character', 'div11', 'disabled']);
     const img = createElement('img');
@@ -43,7 +42,6 @@ function createEmptyPlayerBlock() {
     el.appendChild(img);
     $parent.appendChild(el);
 }
-
 const clearAiPlayer = () => {
     let el = document.querySelector('.activeAi');
     if (el) {
@@ -56,8 +54,6 @@ const setAiPlayer = async (set = false) => {
     clearAiPlayer();
 
     const playerAi = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose').then(res => res.json());
-
-    // let name = playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
     const simplifyPlayerName = () => playerAi.id === 12 ?
         'subzero2' :
         playerAi.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
@@ -105,7 +101,7 @@ async function init() {
 
     let imgSrc = null;
     let choice = false;
-    // let imgSrcAi = null;
+
     createEmptyPlayerBlock();
 
     players.forEach(item => {
@@ -113,46 +109,44 @@ async function init() {
         const img = createElement('img');
 
         el.addEventListener('mousemove', () => {
-            if (imgSrc === null && choice === false) {
+            if (imgSrc === null && !choice) {
                 imgSrc = item.img;
                 const $img = createElement('img');
                 $img.src = imgSrc;
                 $player.appendChild($img);
             }
         });
-
         el.addEventListener('mouseout', () => {
             if (imgSrc && choice === false) {
                 imgSrc = null;
                 $player.innerHTML = '';
             }
         });
-
         el.addEventListener('click', () => {
-            // let name = item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();//SUB-ZERO => subzero
+            if (choice) {//no click after choosing player
+                return;
+            }
+            imgSrc = null;
+            imgSrc = item.img;
+            choice = true;
+
+            const $img = createElement('img');
             const simplifyPlayerName = () => item.id === 12 ?
                 'subzero2' :
                 item.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
 
-            imgSrc = null;
             $player.innerHTML = '';//clear player img and set again on click;
-
-            imgSrc = item.img;
-            const $img = createElement('img');
             $img.src = imgSrc;
             $player.appendChild($img);//render player preview
-
-            choice = true;
+            $p1Img.src = `./assets/moves/${simplifyPlayerName()}/versus.gif`;//set p1 versus prteview
             el.classList.add('active');
             localStorage.setItem('player1', JSON.stringify(item));
 
-            $p1Img.src = `./assets/moves/${simplifyPlayerName()}/versus.gif`;//set p1 versus prteview
-
-            if (soundOn) {
+            if (soundOn) {//announces chosen player
                 createPlayerNameSound('audio', simplifyPlayerName(), simplifyPlayerName(), 'excellent');
             }
 
-            //imitation of Ai choices, set localStorage on last one
+            //imitation of Ai choices, sets localStorage on last one
             setAiPlayer()
             setTimeout(() => {
                 setAiPlayer()
@@ -170,12 +164,6 @@ async function init() {
                 setAiPlayer(set = true)
             }, 3400);
 
-            // setTimeout(() => {
-            //     if (imgSrc) {
-            //         imgSrc = null;
-            //         $player.innerHTML = '';
-            //     }//clear player img
-            // }, 3900);
             setTimeout(() => {
                 $vsScreen.style.display = 'block';
             }, 4500);

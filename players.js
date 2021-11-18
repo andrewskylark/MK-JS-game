@@ -32,7 +32,7 @@ export class Player {
     block = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
         $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
-        await sleep(600);
+        await sleep(500);
         $img.src = this.img;
     };
     gothit = async () => {
@@ -58,7 +58,7 @@ export class Player {
     };
     win = async () => {
         let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.style.height = '110%';
+        $img.style.height = '115%';
         // await sleep(710);
         $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
     };

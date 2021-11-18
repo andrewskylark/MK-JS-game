@@ -56,7 +56,7 @@ export const createReloadBtn = () => {
 
     return $div;
 }
-export const createFinisherTitle = (type, className) => {
+export const createFinisherTitle = (type, className, soundOn) => {
     const $div = createEl('div', className);
     const $img = createEl('img', 'finisher-img');
     const $audio = createEl('audio');
@@ -66,7 +66,7 @@ export const createFinisherTitle = (type, className) => {
 
     $div.appendChild($img);
     $div.appendChild($audio);
-    $audio.play();
+    soundOn ? $audio.play() : '';
 
     return $div;
 }
