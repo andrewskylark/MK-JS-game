@@ -22,79 +22,63 @@ export class Player {
     normalizeName = () => this.id === 12 ? //SUB-ZERO => subzero
         'subzero2' :
         this.name.replace(/[^a-zа-яё]/gi, '').toLowerCase();// I have 2 sub-zero :/
+    //not the best naming here..
+    $img = () => document.querySelector(`.player${this.player} .character img`);
+    $imgWrapper = () => document.querySelector(`.player${this.player} .character`);
 
+    walking = async (direction) => {
+        this.$img().src = `./assets/moves/${this.normalizeName()}/walking.gif`;
+        this.$imgWrapper().style[direction] = '240px';
+
+        await sleep(2000);
+        this.$img().src = `./assets/moves/${this.normalizeName()}/stance.gif`;
+    }
     attack = async (type) => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
+        this.$img().src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
         await sleep(600);
-        $img.src = this.img;
+        this.$img().src = this.img;
     };
     block = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.src = `./assets/moves/${this.normalizeName()}/block.gif`;
+        this.$img().src = `./assets/moves/${this.normalizeName()}/block.gif`;
         await sleep(500);
-        $img.src = this.img;
+        this.$img().src = this.img;
     };
     gothit = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        let $wrapper = document.querySelector(`.player${this.player} .character`);
         let $blood = createEl('img', 'blood-hit');
         $blood.src = `./assets/moves/blood-hit.gif`;
-        $img.src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
+        this.$img().src = `./assets/moves/${this.normalizeName()}/gothit.gif`;
 
-        $wrapper.appendChild($blood);
+        this.$imgWrapper().appendChild($blood);
 
         await sleep(300);
-
         $blood.remove();
-        
+
         await sleep(200);
-        $img.src = this.img;
+        this.$img().src = this.img;
     };
-    fall = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        // await sleep(801);
-        $img.src = `./assets/moves/${this.normalizeName()}/falling.gif`;
-    };
-    win = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.style.height = '115%';
-        // await sleep(710);
-        $img.src = `./assets/moves/${this.normalizeName()}/win.gif`;
-    };
-    dizzy = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.src = `./assets/moves/${this.normalizeName()}/dizzy.gif`;
-    };
+    // fall = async () => {
+    //     this.$img().src = `./assets/moves/${this.normalizeName()}/falling.gif`;
+    // };
+    // dizzy = async () => {
+    //     this.$img().src = `./assets/moves/${this.normalizeName()}/dizzy.gif`;
+    // };
     changeAnimation = async (type) => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        // await sleep(710);
-        $img.src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
+        this.$img().src = `./assets/moves/${this.normalizeName()}/${type}.gif`;
     };
     blood = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        // await sleep(710);
-        $img.src = `./assets/moves/blood.gif`;
+        this.$img().src = `./assets/moves/blood.gif`;
     };
     bones = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        // await sleep(710);
-        $img.src = `./assets/moves/bones.gif`;
+        this.$img().src = `./assets/moves/bones.gif`;
+    };
+    win = async () => {
+        this.$img().style.height = '115%';
+        this.$img().src = `./assets/moves/${this.normalizeName()}/win.gif`;
     };
     babality = async () => {
-        let $img = document.querySelector(`.player${this.player} .character img`);
-        $img.style.height = '20%';
-        $img.src = `./assets/moves/${this.normalizeName()}/babality.gif`;
+        this.$img().style.height = '20%';
+        this.$img().src = `./assets/moves/${this.normalizeName()}/babality.gif`;
     };
-    walking = async (direction) => {
-        let $wrapper = document.querySelector(`.player${this.player} .character`);
-        let $img = document.querySelector(`.player${this.player} .character img`);
-
-        $img.src = `./assets/moves/${this.normalizeName()}/walking.gif`;
-        $wrapper.style[direction] = '240px';
-        await sleep(2000);
-        $img.src = `./assets/moves/${this.normalizeName()}/stance.gif`;
-    }
 
     changeHP = (amount) => this.hp >= amount ? this.hp -= amount : this.hp = 0;
     elHP = () => {

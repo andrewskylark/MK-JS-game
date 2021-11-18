@@ -13,7 +13,7 @@ export const createAudioEl = async (root, srcName) => {
     root.appendChild($el);
     await $el.play();
 }
-export const createPlayer = ({player, hp, name, img}) => {
+export const createPlayer = ({ player, hp, name, img }) => {
     const $player = createEl('div', `player${player}`);
     const $progressbar = createEl('div', 'progressbar');
     const $life = createEl('div', 'life');

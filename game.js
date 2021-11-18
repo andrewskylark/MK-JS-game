@@ -4,6 +4,7 @@ import { Player, playerAttack } from "./players.js";
 import { getRandom, sleep } from "./utils.js";
 
 const ARENAS = 5;
+const FINISHERS = ['fatality', 'babality', 'animality', 'friendship', 'high', 'low', 'mid'];
 const hitTypeMap = {
     head: `high`,
     body: `mid`,
@@ -11,14 +12,13 @@ const hitTypeMap = {
 };
 const arenas = document.querySelector('.arenas');
 const $audio = document.querySelector('.audio');
-const $finisherForm = document.querySelector('.finisher-form');
 const $allMusic = $audio.querySelectorAll('.music');
 const $hit = $audio.querySelector('.hit');
 const $block = $audio.querySelector('.block');
-const $pathetic = $audio.querySelector('.pathetic');
-const $wellDone = $audio.querySelector('.welldone');
 const $neverWin = $audio.querySelector('.neverwin');
-const FINISHERS = ['fatality', 'babality', 'animality', 'friendship', 'high', 'low', 'mid'];
+const $pathetic = $audio.querySelector('.pathetic');
+const $finisherForm = document.querySelector('.finisher-form');
+const $hitFormBtn = document.querySelector('.control button[type="submit"]');
 
 let player1;
 let player2;
@@ -41,67 +41,65 @@ class Game {
             $audio.appendChild($sound);
             soundOn ? $sound.play() : '';
         }
-        const getLoserAnimation = async () => {
+        const onFinisherSimpleHit = async () => {
+            winner.changeAnimation(type);
+            
+            await sleep(200);
+            loser.gothit();
+            soundOn ? $hit.play() : '';
+
+            await sleep(801);
+            loser.changeAnimation('falling');
+            winner.win();
+        }
+        const renderPlayersAnimations = async () => {
             switch (type) {
                 case 'babality':
                     await sleep(400);
                     loser.babality();
                     getSound();
+
                     await sleep(600);
                     winner.win();
                     break;
                 case 'friendship':
                     getSound();
+
                     await sleep(400);
                     winner.changeAnimation(type);
                     return;
                 case 'animality':
                     getSound();
+
                     await sleep(700);
                     winner.changeAnimation(type);
-                    await sleep(900);
+
+                    await sleep(1000);
                     loser.blood();
                     break;
                 case 'fatality':
                     getSound();
+
                     await sleep(400);
                     winner.changeAnimation(type);
+
                     await sleep(800);
                     loser.bones();
                     break;
-                case 'high':
-                    winner.changeAnimation(type);
-                    soundOn ? $hit.play() : '';
-                    await sleep(200);
-                    loser.gothit();
-                    await sleep(801);
-                    winner.win();
-                    loser.changeAnimation('falling');
+                case 'high': case 'mid': case 'low':
+                    onFinisherSimpleHit();
                     break;
-                case 'mid':
-                    winner.changeAnimation(type);
-                    await sleep(200);
-                    loser.gothit();
-                    soundOn ? $hit.play() : '';
-                    await sleep(801);
-                    winner.changeAnimation('win');
-                    loser.changeAnimation('falling');
-                    break;
-                case 'low':
-                    winner.changeAnimation(type);
-                    await sleep(200);
-                    loser.gothit();
-                    soundOn ? $hit.play() : '';
-                    await sleep(801);
-                    winner.win();
-                    loser.changeAnimation('falling');
-                    break;
+                // case 'mid': 
+                //     onFinisherSimpleHit();
+                //     break;
+                // case 'low':
+                //     onFinisherSimpleHit();
+                //     break;
                 default:
                     break;
             }
         }
-      
-        getLoserAnimation();
+        renderPlayersAnimations();
     }
     start = async () => {
         // const players = await this.getPlayers();
@@ -121,14 +119,13 @@ class Game {
         arenas.classList.replace('arena1', `arena${getRandom(1, ARENAS)}`);//random arena bg
         arenas.appendChild(createPlayer(player1));
         arenas.appendChild(createPlayer(player2));
+        soundOn ? $allMusic[getRandom(1, $allMusic.length - 1)].play() : '';
 
-        soundOn ? $allMusic[getRandom(1, $allMusic.length - 1)].play(): '';
-
-        await sleep (2000);
+        await sleep(2000);
         player1.walking('left');
         player2.walking('right');
-
         generateLogs('start', player1, player2);
+
         this.$el.addEventListener(this.evt, this.gameHandler);
     }
     getMoves = async ({ hit, defence }) => {
@@ -142,49 +139,52 @@ class Game {
 
         return body;
     }
+    getGameResults = async () => {
+        let p1Wins = (player2.hp === 0 && player2.hp < player1.hp);
+        let p2Wins = (player1.hp === 0 && player1.hp < player2.hp);
+        let draw = (player1.hp === 0 && player2.hp === 0);
 
-    showResults = async () => {
         if ((player1.hp === 0 && player2.hp !== 0) || ((player1.hp !== 0 && player2.hp === 0))) {
-            // arenas.appendChild(createReloadBtn());
             arenas.appendChild(createFinisherTitle('finish-him', 'finish-him', soundOn));
-        }
+        }//only one of players down
         if (player1.hp === 0 || player2.hp === 0) {
-            // await sleep(10000);
             arenas.appendChild(createReloadBtn());
-        }
-        //p1 lost
-        if (player1.hp === 0 && player1.hp < player2.hp) {
-            // arenas.appendChild(createResultsTitle(player2.name));
-            await sleep(501);
+            $hitFormBtn.disabled = true;
+        }//either one or both of players down
+
+        if (p2Wins) {
+            await sleep(501);//delay for gothit / block animation
             player1.changeAnimation('dizzy');
             let finisherType = FINISHERS[getRandom(0, FINISHERS.length - 1)];
-            
+
             await sleep(2000);
             this.doFinisher(player2, finisherType, player1); //random finisher by AI
-            
+
             await sleep(1500);
             arenas.appendChild(createResultsTitle(player2.name));
             soundOn ? $pathetic.play() : '';
+
             await sleep(3000);
             if (finisherType !== 'high' && finisherType !== 'mid' && finisherType !== 'low') {
                 arenas.appendChild(createFinisherTitle(finisherType, 'finisher', soundOn));
             }
             generateLogs('end', player2, player1);
-        //p1 wins
-        } else if (player2.hp === 0 && player2.hp < player1.hp) {
-            generateLogs('end', player1, player2)
-            player2.dizzy();
+
+        } else if (p1Wins) {
+            await sleep(501);//delay for gothit / block animation
+            player2.changeAnimation('dizzy');
+
             await sleep(1000);
             $finisherForm.style.display = 'flex';
             $finisherForm.addEventListener('submit', (evt) => {
                 evt.preventDefault();
-                let finisher;
+                let finisherType;
                 for (let item of $finisherForm) {
                     if (item.checked) {
                         finisher = item.value;
                     }
                 }
-                this.doFinisher(player1, finisher, player2);
+                this.doFinisher(player1, finisherType, player2);
                 $finisherForm.style.display = 'none';
 
                 setTimeout(() => {
@@ -199,19 +199,18 @@ class Game {
 
                 }, 3000);
                 setTimeout(() => {
-                    arenas.appendChild(createFinisherTitle(finisher, 'finisher', soundOn));
+                    arenas.appendChild(createFinisherTitle(finisherType, 'finisher', soundOn));
                 }, 5000);
-                
+                generateLogs('end', player1, player2)
             })
-            // player1.win();
-            // soundOn ? $wellDone.play() : '';
-        } else if (player1.hp === 0 && player2.hp === 0) {
-            arenas.appendChild(createResultsTitle());
-            generateLogs('draw', player1, player2);
+
+        } else if (draw) {
             await sleep(601);
             player1.changeAnimation('dizzy');
             player2.changeAnimation('dizzy');
+            arenas.appendChild(createResultsTitle());
             soundOn ? $neverWin.play() : '';
+            generateLogs('draw', player1, player2);
         }
     }
 
@@ -223,45 +222,45 @@ class Game {
 
         let playerMove = movesData.player1;
         let enemyMove = movesData.player2;
-        // let playerHit = hitTypeMap[playerMove.hit];
-        // let enemyHit = hitTypeMap[enemyMove.hit];
+        //p1 move
+        if (playerMove.hit !== enemyMove.defence) {//clear hit
+            player1.attack(hitTypeMap[playerMove.hit]);
 
-        if (playerMove.hit !== enemyMove.defence) {
+            await sleep(200);
+            player2.gothit();
             player2.changeHP(enemyMove.value);
             player2.renderHP();
-            generateLogs('hit', player1, player2, playerMove.value);
-
             soundOn ? $hit.play() : '';
-
-            player1.attack(hitTypeMap[playerMove.hit]);
-            player2.gothit();
+            generateLogs('hit', player1, player2, playerMove.value);
         } else { //if p2 blocks
-            generateLogs('defence', player1, player2);
             player1.attack(hitTypeMap[playerMove.hit]);
             player2.block();
+
+            await sleep(200);
             soundOn ? $block.play() : '';
+            generateLogs('defence', player1, player2);
         }
         //p2 attack move
         setTimeout(() => {
             if (enemyMove.hit !== playerMove.defence) {
+                player2.attack(hitTypeMap[enemyMove.hit]);
+
+                player1.gothit();
                 player1.changeHP(playerMove.value);
                 player1.renderHP();
-                generateLogs('hit', player2, player1, enemyMove.value);
-
-                player2.attack(hitTypeMap[enemyMove.hit]);
-                player1.gothit();
-
                 soundOn ? $hit.play() : '';
+                generateLogs('hit', player2, player1, enemyMove.value);
             } else {
-                generateLogs('defence', player2, player1);
                 player2.attack(hitTypeMap[enemyMove.hit]);
                 player1.block();
+
                 soundOn ? $block.play() : '';
+                generateLogs('defence', player2, player1);
             }
         }, 750);
 
         setTimeout(() => {
-            this.showResults();
+            this.getGameResults();
         }, 800);
     };
 }
